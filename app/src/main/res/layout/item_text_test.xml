@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="vertical">
+
+    <TextView
+        android:id="@+id/text_comment"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_margin="8dp"
+        android:textColor="@android:color/white"
+        android:background="@color/gray_700"
+        android:autoLink="web"
+        android:text="发动机附近的开发阶段发大幅度艰苦奋斗加快房间打开房间的空间发 发动机开发阶段控件放到控件放到会计法 发动机开发阶段开放接口缴费多缴费多空间"/>
+
+</LinearLayout>

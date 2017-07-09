@@ -1,0 +1,25 @@
+<resources>
+    <string name="app_name">煎蛋</string>
+    <string name="comment_title">评论</string>
+    <string name="tucao_title">吐槽</string>
+
+    <string name="settings">设置</string>
+
+    <string name="fresh_news_title">新鲜事</string>
+    <string name="boring_pic_title">无聊图</string>
+    <string name="meizi_title">妹子图</string>
+    <string name="joke_title">段子</string>
+
+    <string name="pic_page" formatted="false">%s/%s</string>
+    <string name="connect_error">连接错误，点击重试</string>
+    <string name="comment_count_text">%s评论</string>
+    <string name="vote_positive_text">OO %s</string>
+    <string name="vote_negative_text">XX %s</string>
+    <string name="tucao_count_text">吐槽 %s</string>
+    <string name="browse_big_picture">查看大图</string>
+    <string name="action_share_text">分享</string>
+    <string name="action_copy_text">复制文字内容</string>
+    <string name="category_comment_rank">热门评论</string>
+    <string name="category_comment_normal">最新评论</string>
+
+</resources>

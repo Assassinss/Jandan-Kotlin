@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <color name="colorPrimary">#000000</color>
+    <color name="colorPrimaryDark">#000000</color>
+    <color name="colorAccent">#FF4081</color>
+
+    <color name="transparent_70">#77000000</color>
+    <color name="transparent_80">#88000000</color>
+    <color name="gray_400">#bdbdbd</color>
+    <color name="gray_600">#757575</color>
+    <color name="gray_700">#616161</color>
+    <color name="tab_text_color">#bdbdbd</color>
+    <color name="divider">#1f000000</color> <!-- 12% black -->
+
+</resources>
