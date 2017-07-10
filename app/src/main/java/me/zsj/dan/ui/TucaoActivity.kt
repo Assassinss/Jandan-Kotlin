@@ -13,7 +13,6 @@ import es.dmoral.toasty.Toasty
 import me.zsj.dan.R
 import me.zsj.dan.data.DataCallbackAdapter
 import me.zsj.dan.data.DataManager
-import me.zsj.dan.data.DataManagerFactory
 import me.zsj.dan.model.TucaoData
 
 /**
@@ -46,7 +45,7 @@ class TucaoActivity : AppCompatActivity() {
 
         val id = intent.getStringExtra(ID)
 
-        dataManager = DataManagerFactory.getInstance(this)
+        dataManager = DataManager(this)
 
         dataManager.registerDataCallback(object : DataCallbackAdapter() {
             override fun onLoadTucao(tucaoData: TucaoData?) {

@@ -47,10 +47,17 @@ open class BaseDataManager(context: Activity) {
                             .cacheControl(CacheControl.FORCE_NETWORK)
                             .build())
         }
-        originalResponse.newBuilder()
-                .header("Cache-Control", "public, If-Modified-Since, max-age=86400, max-stale=2419200")
-                .removeHeader("Pragma")
-                .build()
+        if (NetUtils.checkNet(context)) {
+            originalResponse.newBuilder()
+                    .header("Cache-Control", "public, max-age=86400,")
+                    .removeHeader("Pragma")
+                    .build()
+        } else {
+            originalResponse.newBuilder()
+                    .header("Cache-Control", "public, only-if-cached, max-stale=2419200")
+                    .removeHeader("Pragma")
+                    .build()
+        }
     }
 
     init {

@@ -14,7 +14,6 @@ import com.bumptech.glide.Glide
 import me.zsj.dan.R
 import me.zsj.dan.data.DataCallbackAdapter
 import me.zsj.dan.data.DataManager
-import me.zsj.dan.data.DataManagerFactory
 import me.zsj.dan.data.executor.DownloadExecutors
 import me.zsj.dan.data.executor.GifCallback
 import me.zsj.dan.model.NewDetail
@@ -50,7 +49,7 @@ class NewDetailActivity : AppCompatActivity(), View.OnClickListener {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_new_detail)
 
-        dataManager = DataManagerFactory.getInstance(this)
+        dataManager = DataManager(this)
         dataManager.registerDataCallback(object : DataCallbackAdapter() {
             override fun onLoadNewDetail(newDetail: NewDetail?) {
                 loadingProgress.visibility = View.GONE

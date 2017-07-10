@@ -17,7 +17,6 @@ import me.zsj.dan.binder.comment.CommentBinder
 import me.zsj.dan.binder.comment.CommentCategoryBinder
 import me.zsj.dan.data.DataCallbackAdapter
 import me.zsj.dan.data.DataManager
-import me.zsj.dan.data.DataManagerFactory
 import me.zsj.dan.model.NewDetail
 import me.zsj.dan.model.PostComment
 
@@ -49,7 +48,7 @@ class CommentActivity : AppCompatActivity() {
 
         val id = intent.getStringExtra(ID)
 
-        dataManager = DataManagerFactory.getInstance(this)
+        dataManager = DataManager(this)
 
         dataManager.registerDataCallback(object : DataCallbackAdapter() {
             override fun onLoadNewDetail(newDetail: NewDetail?) {

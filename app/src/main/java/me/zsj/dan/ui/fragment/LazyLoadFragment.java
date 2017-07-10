@@ -8,7 +8,6 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import me.zsj.dan.data.DataManager;
-import me.zsj.dan.data.DataManagerFactory;
 
 /**
  * Fork from https://github.com/xmagicj/LazyFragment/blob/master/app/src/main/java/com/xmagicj/android/lazyfragment/BaseFragment.java
@@ -49,7 +48,7 @@ public abstract class LazyLoadFragment extends Fragment  {
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        dataManager = DataManagerFactory.getInstance(getActivity());
+        dataManager = new DataManager(getActivity());
 
         Bundle bundle = getArguments();
         if (bundle != null && bundle.size() > 0) {
