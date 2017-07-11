@@ -1,4 +1,4 @@
-package me.zsj.dan.ui.fragment
+package me.zsj.dan.ui.adapter
 
 import android.annotation.SuppressLint
 import android.app.Activity
@@ -9,7 +9,6 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.ImageView
-import android.widget.ProgressBar
 import android.widget.TextView
 import butterknife.bindView
 import com.bumptech.glide.Glide
@@ -17,6 +16,7 @@ import com.bumptech.glide.load.engine.DiskCacheStrategy
 import me.zsj.dan.R
 import me.zsj.dan.model.Post
 import me.zsj.dan.ui.NewDetailActivity
+import me.zsj.dan.ui.adapter.common.LoadingHolder
 import me.zsj.dan.utils.DateUtils
 import java.util.*
 
@@ -26,7 +26,7 @@ import java.util.*
 class FreshNewsAdapter(var context: Activity, var freshNewsList: ArrayList<Post>) :
         RecyclerView.Adapter<RecyclerView.ViewHolder>() {
 
-    override fun onCreateViewHolder(parent: ViewGroup?, viewType: Int): RecyclerView.ViewHolder {
+    override fun onCreateViewHolder(parent: ViewGroup?, viewType: Int): RecyclerView.ViewHolder? {
         if (viewType == R.layout.item_load_more) {
             val view = LayoutInflater.from(context).inflate(R.layout.item_load_more, parent, false)
             return LoadingHolder(view)
@@ -34,8 +34,7 @@ class FreshNewsAdapter(var context: Activity, var freshNewsList: ArrayList<Post>
             val view = LayoutInflater.from(context).inflate(R.layout.item_news, parent, false)
             return NewsHolder(view)
         }
-        val view = LayoutInflater.from(context).inflate(R.layout.item_news, parent, false)
-        return NewsHolder(view)
+        return null
     }
 
     @SuppressLint("StringFormatMatches")
@@ -100,7 +99,4 @@ class FreshNewsAdapter(var context: Activity, var freshNewsList: ArrayList<Post>
         val cover: ImageView by bindView(R.id.cover)
     }
 
-    inner class LoadingHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
-        val progressBar: ProgressBar by bindView(R.id.progressBar)
-    }
 }

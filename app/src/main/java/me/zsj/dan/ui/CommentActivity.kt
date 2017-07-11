@@ -13,8 +13,8 @@ import es.dmoral.toasty.Toasty
 import me.drakeet.multitype.Items
 import me.drakeet.multitype.MultiTypeAdapter
 import me.zsj.dan.R
-import me.zsj.dan.binder.comment.CommentBinder
-import me.zsj.dan.binder.comment.CommentCategoryBinder
+import me.zsj.dan.binder.CommentBinder
+import me.zsj.dan.binder.CommentCategoryBinder
 import me.zsj.dan.data.DataCallbackAdapter
 import me.zsj.dan.data.DataManager
 import me.zsj.dan.model.NewDetail

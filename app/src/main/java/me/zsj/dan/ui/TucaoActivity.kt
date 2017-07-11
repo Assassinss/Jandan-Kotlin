@@ -14,6 +14,7 @@ import me.zsj.dan.R
 import me.zsj.dan.data.DataCallbackAdapter
 import me.zsj.dan.data.DataManager
 import me.zsj.dan.model.TucaoData
+import me.zsj.dan.ui.adapter.TucaoAdapter
 
 /**
  * @author zsj

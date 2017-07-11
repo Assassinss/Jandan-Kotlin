@@ -1,4 +1,4 @@
-package me.zsj.dan.binder
+package me.zsj.dan.ui.adapter
 
 import android.content.Intent
 import android.support.v7.widget.RecyclerView

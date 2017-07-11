@@ -1,4 +1,4 @@
-package me.zsj.dan.binder.comment
+package me.zsj.dan.binder
 
 import android.support.constraint.ConstraintLayout
 import android.support.v7.widget.RecyclerView

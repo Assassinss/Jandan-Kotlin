@@ -13,7 +13,7 @@ import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 
-import me.zsj.dan.binder.SinglePictureBinder;
+import me.zsj.dan.ui.adapter.PictureAdapter;
 import me.zsj.dan.utils.ScreenUtils;
 
 /**
@@ -79,7 +79,7 @@ public class RatioScaleImageView extends LargeImageView {
     }
 
     //TODO: 更好的获取图片的宽高方法？
-    public void setBigImage(final SinglePictureBinder.SingleHolder holder,
+    public void setBigImage(final PictureAdapter.SingleHolder holder,
                             final File resource, final InputStream inputStream) {
         try {
             BitmapFactory.Options tmpOptions = new BitmapFactory.Options();

@@ -1,16 +1,17 @@
-package me.zsj.dan.binder
+package me.zsj.dan.ui.adapter
 
+import android.app.Activity
 import android.content.Context
 import android.content.Intent
 import android.graphics.Color
 import android.os.Handler
 import android.os.Looper
+import android.support.v7.widget.PopupMenu
 import android.util.Log
 import android.view.Gravity
 import android.view.View
-import android.widget.PopupMenu
-import me.drakeet.multitype.ItemViewBinder
 import me.zsj.dan.R
+import me.zsj.dan.binder.Holder
 import me.zsj.dan.data.BaseDataManager
 import me.zsj.dan.data.DataManager
 import me.zsj.dan.model.Comment
@@ -28,12 +29,15 @@ import java.io.IOException
 /**
  * @author zsj
  */
-abstract class ViewBinder<C, out T: Holder>(var dataManager: DataManager) :
-        ItemViewBinder<C, Holder>() {
+open class ItemBinder(var dataManager: DataManager) {
 
-    private val TAG = "ViewBinder"
+    private val TAG = "ItemBinder"
+    private val handler: Handler = Handler(Looper.getMainLooper())
+    private lateinit var onVoteListener: OnVoteListener
 
-    private val handler: Handler= Handler(Looper.getMainLooper())
+    fun setOnVoteListener(onVoteListener: OnVoteListener) {
+        this.onVoteListener = onVoteListener
+    }
 
     fun setClickListener(holder: Holder, comment: Comment) {
         holder.votePositive.setOnClickListener { voteOO(holder, comment.id) }
@@ -55,8 +59,42 @@ abstract class ViewBinder<C, out T: Holder>(var dataManager: DataManager) :
         actionMenu.show()
     }
 
-    fun bindCommonData(holder: Holder, comment: Comment) {
-        val context = holder.author.context
+    fun voteOO(holder: Holder, ID: String) {
+        dataManager.getClient().newCall(
+                dataManager.buildRequest(BaseDataManager.VOTE_POSITIVE, ID))
+                .enqueue(object : Callback {
+                    override fun onFailure(call: Call?, e: IOException?) {
+                        Log.e(TAG, "failed to vote OO", e)
+                    }
+
+                    override fun onResponse(call: Call?, response: Response?) {
+                        if (response!!.isSuccessful) {
+                            val body = response.body()?.string()
+                            handler.post { onVoteListener.onVoteOO(holder, body) }
+                        }
+                    }
+                })
+    }
+
+    fun voteXX(holder: Holder, ID: String) {
+        dataManager.getClient().newCall(
+                dataManager.buildRequest(BaseDataManager.VOTE_NEGATIVE, ID))
+                .enqueue(object : Callback {
+                    override fun onFailure(call: Call?, e: IOException?) {
+                        Log.e(TAG, "faile to vote XX ", e)
+                    }
+
+                    override fun onResponse(call: Call?, response: Response?) {
+                        if (response!!.isSuccessful) {
+                            val body = response.body()?.string()
+                            handler.post {  onVoteListener.onVoteXX(holder, body)  }
+                        }
+                    }
+                })
+    }
+
+
+    fun bindCommonData(context: Activity, holder: Holder, comment: Comment) {
         val color_gray_600 = context.loadColor(R.color.gray_600)
         holder.votePositive.setTextColor(color_gray_600)
         holder.voteNegative.setTextColor(color_gray_600)
@@ -79,6 +117,32 @@ abstract class ViewBinder<C, out T: Holder>(var dataManager: DataManager) :
         holder.commentCount.text = context.getString(R.string.tucao_count_text, comment.commentCount)
     }
 
+    fun updateVotePositive(context: Context, holder: Holder, result: String?) {
+        val comment = dataManager.getCommnets()[holder.adapterPosition]
+        val count = result!!.last()
+        if (count == '1') {
+            comment.voted = true
+            comment.votePositive = (comment.votePositive.toInt() + 1).toString()
+            holder.votePositive.text = context.getString(R.string.vote_positive_text, comment.votePositive)
+            holder.votePositive.setTextColor(Color.RED)
+        } else {
+            context.shortToast("You've Voted.")
+        }
+    }
+
+    fun updateVoteNegative(context: Context, holder: Holder, result: String?) {
+        val comment = dataManager.getCommnets()[holder.adapterPosition]
+        val count = result!!.last()
+        if (count == '1') {
+            comment.negative = true
+            comment.voteNegative = (comment.voteNegative.toInt() + 1).toString()
+            holder.voteNegative.text = context.getString(R.string.vote_negative_text, comment.voteNegative)
+            holder.voteNegative.setTextColor(Color.BLUE)
+        } else {
+            context.shortToast("You've Voted.")
+        }
+    }
+
     fun stopGifAnimation(gifDrawable: GifDrawable) {
         if (gifDrawable.isPlaying) {
             gifDrawable.stop()
@@ -98,68 +162,8 @@ abstract class ViewBinder<C, out T: Holder>(var dataManager: DataManager) :
         context.startActivity(intent)
     }
 
-    abstract fun onVoteOO(holder: Holder, result: String?)
-
-    abstract fun onVoteXX(holder: Holder, result: String?)
-
-    fun updateVotePositive(context: Context, holder: Holder, result: String?) {
-        val comment = dataManager.getCommnets()[holder.adapterPosition] as Comment
-        val count = result!!.last()
-        if (count == '1') {
-            comment.voted = true
-            comment.votePositive = (comment.votePositive.toInt() + 1).toString()
-            holder.votePositive.text = context.getString(R.string.vote_positive_text, comment.votePositive)
-            holder.votePositive.setTextColor(Color.RED)
-        } else {
-            context.shortToast("You've Voted.")
-        }
+    interface OnVoteListener {
+        fun onVoteOO(holder: Holder, result: String?)
+        fun onVoteXX(holder: Holder, result: String?)
     }
-
-    fun updateVoteNegative(context: Context, holder: Holder, result: String?) {
-        val comment = dataManager.getCommnets()[holder.adapterPosition] as Comment
-        val count = result!!.last()
-        if (count == '1') {
-            comment.negative = true
-            comment.voteNegative = (comment.voteNegative.toInt() + 1).toString()
-            holder.voteNegative.text = context.getString(R.string.vote_negative_text, comment.voteNegative)
-            holder.voteNegative.setTextColor(Color.BLUE)
-        } else {
-            context.shortToast("You've Voted.")
-        }
-    }
-
-    fun voteOO(holder: Holder, ID: String) {
-        dataManager.getClient().newCall(
-                dataManager.buildRequest(BaseDataManager.VOTE_POSITIVE, ID))
-                .enqueue(object : Callback {
-                    override fun onFailure(call: Call?, e: IOException?) {
-                        Log.e(TAG, "failed to vote OO", e)
-                    }
-
-                    override fun onResponse(call: Call?, response: Response?) {
-                        if (response!!.isSuccessful) {
-                            val body = response.body()?.string()
-                            handler.post { onVoteOO(holder, body) }
-                        }
-                    }
-                })
-    }
-
-    fun voteXX(holder: Holder, ID: String) {
-        dataManager.getClient().newCall(
-                dataManager.buildRequest(BaseDataManager.VOTE_NEGATIVE, ID))
-                .enqueue(object : Callback {
-                    override fun onFailure(call: Call?, e: IOException?) {
-                        Log.e(TAG, "faile to vote XX ", e)
-                    }
-
-                    override fun onResponse(call: Call?, response: Response?) {
-                        if (response!!.isSuccessful) {
-                            val body = response.body()?.string()
-                            handler.post {  onVoteXX(holder, body)  }
-                        }
-                    }
-                })
-    }
-
 }

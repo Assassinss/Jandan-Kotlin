@@ -12,6 +12,7 @@ import me.zsj.dan.R
 import me.zsj.dan.data.DataCallbackAdapter
 import me.zsj.dan.model.FreshNew
 import me.zsj.dan.model.Post
+import me.zsj.dan.ui.adapter.FreshNewsAdapter
 import me.zsj.dan.utils.ItemDivider
 import me.zsj.dan.utils.getColor
 import me.zsj.dan.utils.recyclerview.RecyclerViewExtensions
@@ -69,7 +70,7 @@ class FreshNewsFragment : LazyLoadFragment(), RecyclerViewExtensions {
         newsAdapter = FreshNewsAdapter(activity, freshNewsList)
         newsList?.addItemDecoration(ItemDivider(activity, ItemDivider.VERTICAL_LIST))
         newsList?.adapter = newsAdapter
-        newsList?.onLoadMore(6) {
+        newsList?.onLoadMore {
             Log.d(TAG, "loading status: " + dataManager.isLoading())
             if (!dataManager.isLoading()) {
                 page += 1

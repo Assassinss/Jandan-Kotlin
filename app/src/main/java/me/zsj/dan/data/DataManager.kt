@@ -40,7 +40,7 @@ class DataManager(context: Activity) : BaseDataManager(context) {
                 dispatchLoadingFinish()
                 if (response!!.isSuccessful) {
                     Log.d(TAG, "on loaded fresh news success.")
-                    dataCallback.onLoadFreshNews(response?.body())
+                    dataCallback.onLoadFreshNews(response.body())
                 }
             }
         })
@@ -159,13 +159,13 @@ class DataManager(context: Activity) : BaseDataManager(context) {
         })
     }
 
-    private var comments: Items? = null
+    private var comments: ArrayList<Comment>? = null
 
-    fun getCommnets() : Items {
+    fun getCommnets() : ArrayList<Comment> {
         return comments!!
     }
 
-    fun setComments(comments: Items) {
+    fun setComments(comments: ArrayList<Comment>) {
         this.comments = comments
     }
 

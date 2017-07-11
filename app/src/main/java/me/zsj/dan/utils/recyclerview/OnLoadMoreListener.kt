@@ -6,12 +6,12 @@ import android.support.v7.widget.RecyclerView
 /**
  * @author zsj
  */
-class OnLoadMoreListener(val callback: Callback, val visibleItemCount: Int) : RecyclerView.OnScrollListener() {
+class OnLoadMoreListener(val callback: Callback) : RecyclerView.OnScrollListener() {
 
     override fun onScrollStateChanged(recyclerView: RecyclerView?, newState: Int) {
         super.onScrollStateChanged(recyclerView, newState)
         val layoutManager = recyclerView!!.layoutManager as LinearLayoutManager
-        if (layoutManager.findFirstCompletelyVisibleItemPosition() >= layoutManager.itemCount - visibleItemCount
+        if (layoutManager.findLastVisibleItemPosition() >= layoutManager.itemCount - 1
                 && layoutManager.findFirstVisibleItemPosition() != 0) {
             if (newState == RecyclerView.SCROLL_STATE_IDLE ) {
                 callback.onLoadMore()

@@ -7,14 +7,12 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import es.dmoral.toasty.Toasty
-import me.drakeet.multitype.Items
-import me.drakeet.multitype.MultiTypeAdapter
 import me.zsj.dan.R
-import me.zsj.dan.binder.JokeViewBinder
-import me.zsj.dan.binder.LoadingViewBinder
 import me.zsj.dan.data.DataCallbackAdapter
 import me.zsj.dan.model.Comment
 import me.zsj.dan.model.Joke
+import me.zsj.dan.ui.adapter.JokeAdapter
+import me.zsj.dan.utils.NoItemAnimator
 import me.zsj.dan.utils.getColor
 import me.zsj.dan.utils.recyclerview.RecyclerViewExtensions
 
@@ -26,10 +24,9 @@ class JokeFragment : LazyLoadFragment(), RecyclerViewExtensions {
     private var refreshLayout: SwipeRefreshLayout? = null
     private var recyclerView: RecyclerView? = null
 
-    private lateinit var adapter: MultiTypeAdapter
+    private lateinit var adapter: JokeAdapter
 
-    //private var jokeList: ArrayList<Comment> = ArrayList()
-    private var items: Items = Items()
+    private var jokeList: ArrayList<Comment> = ArrayList()
     private var page: Int = 1
     private var clear: Boolean = false
 
@@ -68,17 +65,14 @@ class JokeFragment : LazyLoadFragment(), RecyclerViewExtensions {
     }
 
     private fun setupRecyclerView() {
-        adapter = MultiTypeAdapter(items)
-        adapter.register(String::class.java, LoadingViewBinder())
-        adapter.register(Comment::class.java, JokeViewBinder(activity, dataManager))
-
+        adapter = JokeAdapter(activity, jokeList, dataManager)
+        recyclerView?.itemAnimator = NoItemAnimator()
         recyclerView?.adapter = adapter
 
-        recyclerView?.onLoadMore(4) {
-            if (!dataManager.isLoading()) {
+        recyclerView?.onLoadMore {
+            if (!dataManager.isLoading() && !isLoadMore) {
                 page += 1
                 clear = false
-                showLoadMore()
                 isLoadMore = true
                 recyclerView?.postDelayed({
                     dataManager.loadJokes(page)
@@ -89,38 +83,23 @@ class JokeFragment : LazyLoadFragment(), RecyclerViewExtensions {
 
     private var isLoadMore = false
 
-    private fun showLoadMore() {
-        if (!isLoadMore && items.size > 0) {
-            items.add("LOAD")
-            adapter.notifyItemChanged(items.size - 1)
-            recyclerView?.scrollToPosition(items.size - 1)
-        }
-    }
-
-    private fun hideLoadMore() {
-        if (items.size > 1) {
-            isLoadMore = false
-            items.removeAt(items.size - 1)
-            adapter.notifyItemChanged(items.size - 1)
-        }
-    }
-
     private fun onDataLoaded(joke: Joke?) {
         refreshLayout?.isRefreshing = false
         if (clear) {
-            items.clear()
+            jokeList.clear()
         }
 
-        hideLoadMore()
+        isLoadMore = false
 
         if (joke?.comments != null) {
-            items.addAll(joke.comments)
+            jokeList.addAll(joke.comments)
+            dataManager.setComments(jokeList)
+            adapter.notifyItemRangeChanged(jokeList.size - joke.comments.size - 1, jokeList.size)
         }
-        dataManager.setComments(items)
-        adapter.notifyDataSetChanged()
     }
 
     private fun onLoadDataFailed(error: String?) {
+        isLoadMore = false
         refreshLayout?.isRefreshing = false
         if (page > 1) page -= 1
         Toasty.error(activity, error!!).show()

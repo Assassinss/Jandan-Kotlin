@@ -9,15 +9,12 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import es.dmoral.toasty.Toasty
-import me.drakeet.multitype.Items
 import me.zsj.dan.R
-import me.zsj.dan.binder.GifPictureBinder
-import me.zsj.dan.binder.LoadingViewBinder
-import me.zsj.dan.binder.MultiPictureBinder
-import me.zsj.dan.binder.SinglePictureBinder
 import me.zsj.dan.data.DataCallbackAdapter
 import me.zsj.dan.model.Comment
 import me.zsj.dan.model.Picture
+import me.zsj.dan.ui.adapter.PictureAdapter
+import me.zsj.dan.utils.NoItemAnimator
 import me.zsj.dan.utils.getColor
 import me.zsj.dan.visibility.calculator.ListItemsVisibilityCalculator
 import me.zsj.dan.visibility.calculator.SingleListViewItemActiveCalculator
@@ -38,8 +35,7 @@ open class PictureFragment : LazyLoadFragment() {
     private var picsList: RecyclerView? = null
 
     private lateinit var adapter: PictureAdapter
-    //private val items: ArrayList<Comment> = ArrayList()
-    private val items: Items = Items()
+    private val items: ArrayList<Comment> = ArrayList()
     private var layoutManager: LinearLayoutManager = LinearLayoutManager(activity)
 
     private lateinit var listItemVisibilityCalculator: ListItemsVisibilityCalculator
@@ -98,24 +94,9 @@ open class PictureFragment : LazyLoadFragment() {
     }
 
     private fun setupRecyclerView() {
-        adapter = PictureAdapter(items)
-        adapter.setRecyclerView(picsList)
-        adapter.register(String::class.java, LoadingViewBinder())
-        adapter.register(Comment::class.java).to(
-                SinglePictureBinder(activity, dataManager),
-                GifPictureBinder(activity, dataManager),
-                MultiPictureBinder(activity, dataManager)
-        ).withClassLinker { comment ->
-            if (comment.pics?.size == 1) {
-                if (comment.pics[0].endsWith(GIF_TAG)) {
-                    GifPictureBinder::class.java
-                } else {
-                    SinglePictureBinder::class.java
-                }
-            } else {
-                MultiPictureBinder::class.java
-            }
-        }
+        adapter = PictureAdapter(activity, items, dataManager)
+        adapter.setRecyclerView(picsList!!)
+        picsList?.itemAnimator = NoItemAnimator()
         picsList?.layoutManager = this.layoutManager
         picsList?.adapter = adapter
 
@@ -130,9 +111,9 @@ open class PictureFragment : LazyLoadFragment() {
                 if (newState == RecyclerView.SCROLL_STATE_IDLE && !items.isEmpty()) {
                     listItemVisibilityCalculator.onScrollStateIdle()
                 }
-                if (layoutManager.findFirstVisibleItemPosition() >= layoutManager.itemCount - 2
+                if (layoutManager.findLastVisibleItemPosition() >= layoutManager.itemCount - 1
                         && layoutManager.findFirstVisibleItemPosition() != 0) {
-                    if (newState == RecyclerView.SCROLL_STATE_IDLE) {
+                    if (newState == RecyclerView.SCROLL_STATE_IDLE && !isLoadMore) {
                         loadMoreData()
                     }
                 }
@@ -150,7 +131,6 @@ open class PictureFragment : LazyLoadFragment() {
         if (!dataManager.isLoading()) {
             clear = false
             page += 1
-            showLoadMore()
             isLoadMore = true
             picsList?.postDelayed({
                 if (category.equals(BORING_CATEGORY)) {
@@ -164,39 +144,24 @@ open class PictureFragment : LazyLoadFragment() {
 
     private var isLoadMore = false
 
-    private fun showLoadMore() {
-        if (!isLoadMore && items.size > 0) {
-            items.add("LOAD")
-            adapter.notifyItemChanged(items.size - 1)
-            picsList?.scrollToPosition(items.size - 1)
-        }
-    }
-
-    private fun hideLoadMore() {
-        if (items.size > 1) {
-            isLoadMore = false
-            items.removeAt(items.size - 1)
-            adapter.notifyItemChanged(items.size - 1)
-        }
-    }
-
     private fun onDataLoaded(picture: Picture?) {
         if (clear) {
             items.clear()
         }
 
-        hideLoadMore()
+        isLoadMore = false
 
         refreshLayout?.isRefreshing = false
         if (picture?.comments != null) {
             items.addAll(picture.comments)
+            dataManager.setComments(items)
+            adapter.notifyItemRangeChanged(items.size - picture.comments.size- 1, items.size)
         }
-        dataManager.setComments(items)
-        adapter.notifyDataSetChanged()
     }
 
     private fun onLoadDataFailed(error: String?) {
         refreshLayout?.isRefreshing = false
+        isLoadMore = false
         if (page > 1) page -= 1
         Toasty.error(activity, error!!).show()
     }

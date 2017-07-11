@@ -1,4 +1,4 @@
-package me.zsj.dan.ui
+package me.zsj.dan.ui.adapter
 
 import android.app.Activity
 import android.support.v7.widget.RecyclerView
@@ -7,7 +7,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import me.zsj.dan.R
-import me.zsj.dan.binder.comment.CommentHolder
+import me.zsj.dan.binder.CommentHolder
 import me.zsj.dan.model.TucaoData
 import me.zsj.dan.utils.DateUtils
 
