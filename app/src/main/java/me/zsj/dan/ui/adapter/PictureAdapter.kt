@@ -177,6 +177,7 @@ class PictureAdapter(var context: Activity, var comments: ArrayList<Comment>,
                     playGif.visibility = View.VISIBLE
                     loadingProgress.visibility = View.GONE
                     gifItemBinder?.stopGifAnimation(gifImage.drawable as GifDrawable)
+                    notifyItemChanged(position)
                 }
             }
         }

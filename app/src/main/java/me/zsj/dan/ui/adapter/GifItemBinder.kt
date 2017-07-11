@@ -43,7 +43,7 @@ class GifItemBinder(dataManager: DataManager) : ItemBinder(dataManager) {
                 })
 
         holder.playGif.setOnClickListener {
-            DownloadExecutors.INSTANCE
+            DownloadExecutors.getExecutors()
                     .registerCallback(object : GifCallback {
                         override fun onLoadingStart() {
                             holder.playGif.visibility = View.GONE
@@ -77,6 +77,15 @@ class GifItemBinder(dataManager: DataManager) : ItemBinder(dataManager) {
                 stopGifAnimation(gifDrawable)
             }
             startTucaoActivity(context, item.id)
+        }
+
+        val gifDrawable = holder.gifImage.drawable
+        if (gifDrawable is GifDrawable) {
+            holder.playGif.visibility = View.VISIBLE
+            holder.loadingProgress.visibility = View.GONE
+            if (gifDrawable.isPlaying) {
+                gifDrawable.stop()
+            }
         }
     }
 }
