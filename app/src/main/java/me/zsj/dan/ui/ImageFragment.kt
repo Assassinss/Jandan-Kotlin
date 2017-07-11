@@ -2,7 +2,6 @@ package me.zsj.dan.ui
 
 import android.graphics.drawable.Drawable
 import android.os.Bundle
-import android.support.v4.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -17,22 +16,21 @@ import me.zsj.dan.R
 import me.zsj.dan.data.executor.DownloadExecutors
 import me.zsj.dan.data.executor.GifCallback
 import me.zsj.dan.glide.ProgressTarget
+import me.zsj.dan.ui.fragment.LazyLoadFragment
 import pl.droidsonroids.gif.GifDrawable
 import pl.droidsonroids.gif.GifImageView
 import java.io.File
-import java.lang.Exception
 
 /**
  * @author zsj
  */
-class ImageFragment : Fragment() {
+class ImageFragment : LazyLoadFragment() {
 
     private var largeImage: LargeImageView?= null
     private var gifImage: GifImageView?= null
     private var loadingProgress: ProgressBar? = null
 
-    override fun onCreateView(inflater: LayoutInflater?, container: ViewGroup?,
-                              savedInstanceState: Bundle?): View? {
+    override fun initViews(inflater: LayoutInflater?, container: ViewGroup?, savedInstanceState: Bundle?): View {
         val view = inflater!!.inflate(R.layout.fragment_image, container, false)
         largeImage = view.findViewById(R.id.large_image) as LargeImageView
         gifImage = view.findViewById(R.id.gif_image) as GifImageView
@@ -40,14 +38,12 @@ class ImageFragment : Fragment() {
         return view
     }
 
-    override fun onActivityCreated(savedInstanceState: Bundle?) {
-        super.onActivityCreated(savedInstanceState)
-
+    override fun initData() {
         val picUrl = arguments.getString("picUrl")
 
         if (picUrl.endsWith(".gif")) {
             //TODO:退出 Activity 取消下载任务
-            DownloadExecutors.INSTANCE
+            DownloadExecutors.getExecutors()
                     .registerCallback(object : GifCallback {
                         override fun onLoadingStart() {
                             loadingProgress?.visibility = View.VISIBLE

@@ -47,6 +47,10 @@ class DownloadExecutors private constructor() {
         private object Instance {
             val INSTANCE = DownloadExecutors()
         }
+
+        fun getExecutors() : DownloadExecutors {
+            return DownloadExecutors()
+        }
     }
 
     //TODO: find a best way download gif
