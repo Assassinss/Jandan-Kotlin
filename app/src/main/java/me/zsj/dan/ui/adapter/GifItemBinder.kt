@@ -70,22 +70,19 @@ class GifItemBinder(dataManager: DataManager) : ItemBinder(dataManager) {
 
         setClickListener(holder, item)
         holder.card.setOnClickListener {
-            val gifDrawable = holder.gifImage.drawable
-            if (gifDrawable is GifDrawable) {
-                holder.playGif.visibility = View.VISIBLE
-                holder.loadingProgress.visibility = View.GONE
-                stopGifAnimation(gifDrawable)
-            }
+            stopGifAnimation(holder)
             startTucaoActivity(context, item.id)
         }
 
+        stopGifAnimation(holder)
+    }
+
+    fun stopGifAnimation(holder: PictureAdapter.GifHolder) {
         val gifDrawable = holder.gifImage.drawable
         if (gifDrawable is GifDrawable) {
             holder.playGif.visibility = View.VISIBLE
             holder.loadingProgress.visibility = View.GONE
-            if (gifDrawable.isPlaying) {
-                gifDrawable.stop()
-            }
+            stopGifAnimation(gifDrawable)
         }
     }
 }
