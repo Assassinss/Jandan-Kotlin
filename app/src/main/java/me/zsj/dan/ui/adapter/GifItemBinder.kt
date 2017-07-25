@@ -37,8 +37,7 @@ class GifItemBinder(dataManager: DataManager) : ItemBinder(dataManager) {
                 .asBitmap()
                 .into(object : SimpleTarget<Bitmap>() {
                     override fun onResourceReady(resource: Bitmap?, glideAnimation: GlideAnimation<in Bitmap>?) {
-                        holder.gifImage.setOriginalSize(resource!!.width, resource.height)
-                        holder.gifImage.setImageBitmap(resource)
+                        holder.gifImage.setImageView(resource, resource!!.width, resource.height)
                     }
                 })
 

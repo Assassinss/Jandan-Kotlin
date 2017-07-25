@@ -1,7 +1,6 @@
 package me.zsj.dan.ui.adapter
 
 import android.app.Activity
-import android.graphics.Bitmap
 import android.graphics.BitmapFactory
 import android.view.View
 import com.bumptech.glide.Glide
@@ -41,19 +40,15 @@ class SingleItemBinder(dataManager: DataManager) : ItemBinder(dataManager) {
 
                     override fun onResourceReady(resource: File?, animation: GlideAnimation<in File>?) {
                         super.onResourceReady(resource, animation)
-                        val options = BitmapFactory.Options()
-                        options.inJustDecodeBounds = true
-                        options.inPreferredConfig = Bitmap.Config.RGB_565
-                        BitmapFactory.decodeFile(resource!!.path, options)
-                        val width = options.outWidth
-                        val height = options.outHeight
+                        val bitmap = BitmapFactory.decodeFile(resource!!.path)
+                        val width = bitmap.width
+                        val height = bitmap.height
                         if (height >= ScreenUtils.getScreenHeight(context)) {
                             holder.browsePicture.visibility = View.VISIBLE
-                            holder.picture.setBigImage(resource, options)
+                            holder.picture.setBigImage(resource, width)
                         } else {
                             holder.browsePicture.visibility = View.GONE
-                            holder.picture.setOriginalSize(width, height)
-                            holder.picture.setImage(BitmapFactory.decodeFile(resource.path))
+                            holder.picture.setImageView(bitmap, width, height)
                         }
                     }
 

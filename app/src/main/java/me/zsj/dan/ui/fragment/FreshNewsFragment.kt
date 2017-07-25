@@ -7,12 +7,12 @@ import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import es.dmoral.toasty.Toasty
 import me.zsj.dan.R
 import me.zsj.dan.data.DataCallbackAdapter
 import me.zsj.dan.model.FreshNew
 import me.zsj.dan.model.Post
 import me.zsj.dan.ui.adapter.FreshNewsAdapter
+import me.zsj.dan.ui.adapter.common.OnLoadDataListener
 import me.zsj.dan.utils.ItemDivider
 import me.zsj.dan.utils.getColor
 import me.zsj.dan.utils.recyclerview.RecyclerViewExtensions
@@ -20,7 +20,7 @@ import me.zsj.dan.utils.recyclerview.RecyclerViewExtensions
 /**
  * @author zsj
  */
-class FreshNewsFragment : LazyLoadFragment(), RecyclerViewExtensions {
+class FreshNewsFragment : LazyLoadFragment(), RecyclerViewExtensions, OnLoadDataListener {
 
     private val TAG = "FreshNewsFragment"
 
@@ -68,17 +68,26 @@ class FreshNewsFragment : LazyLoadFragment(), RecyclerViewExtensions {
 
     private fun setupRecyclerView() {
         newsAdapter = FreshNewsAdapter(activity, freshNewsList)
+        newsAdapter.setOnLoadDataListener(this)
         newsList?.addItemDecoration(ItemDivider(activity, ItemDivider.VERTICAL_LIST))
         newsList?.adapter = newsAdapter
         newsList?.onLoadMore {
             Log.d(TAG, "loading status: " + dataManager.isLoading())
-            if (!dataManager.isLoading()) {
-                page += 1
-                clear = false
-                newsList?.postDelayed({
-                    dataManager.loadFreshNews(page)
-                }, 500)
-            }
+            loadMoreData()
+        }
+    }
+
+    override fun onLoadMoreData() {
+        loadMoreData()
+    }
+
+    private fun loadMoreData() {
+        if (!dataManager.isLoading()) {
+            page += 1
+            clear = false
+            newsList?.postDelayed({
+                dataManager.loadFreshNews(page)
+            }, 500)
         }
     }
 
@@ -86,6 +95,7 @@ class FreshNewsFragment : LazyLoadFragment(), RecyclerViewExtensions {
         if (clear) {
             freshNewsList.clear()
         }
+        newsAdapter.onLoadingError(false)
         refreshLayout?.isRefreshing = false
         if (freshNew?.posts != null) {
             freshNewsList.addAll(freshNew.posts)
@@ -96,7 +106,7 @@ class FreshNewsFragment : LazyLoadFragment(), RecyclerViewExtensions {
     private fun onLoadDataFailed(error: String?) {
         refreshLayout?.isRefreshing = false
         if (page > 1) page -= 1
-        Toasty.error(activity, error!!).show()
+        newsAdapter.onLoadingError(true)
     }
 
 }

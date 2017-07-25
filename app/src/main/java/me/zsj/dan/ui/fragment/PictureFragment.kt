@@ -8,12 +8,12 @@ import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import es.dmoral.toasty.Toasty
 import me.zsj.dan.R
 import me.zsj.dan.data.DataCallbackAdapter
 import me.zsj.dan.model.Comment
 import me.zsj.dan.model.Picture
 import me.zsj.dan.ui.adapter.PictureAdapter
+import me.zsj.dan.ui.adapter.common.OnLoadDataListener
 import me.zsj.dan.utils.NoItemAnimator
 import me.zsj.dan.utils.getColor
 import me.zsj.dan.visibility.calculator.ListItemsVisibilityCalculator
@@ -24,7 +24,7 @@ import me.zsj.dan.visibility.scroll_utils.RecyclerViewItemPositionGetter
 /**
  * @author zsj
  */
-open class PictureFragment : LazyLoadFragment() {
+open class PictureFragment : LazyLoadFragment(), OnLoadDataListener {
 
     private val TAG = "PictureFragment"
     private val GIF_TAG = ".gif"
@@ -95,6 +95,7 @@ open class PictureFragment : LazyLoadFragment() {
 
     private fun setupRecyclerView() {
         adapter = PictureAdapter(activity, items, dataManager)
+        adapter.setOnLoadDataListener(this)
         adapter.setRecyclerView(picsList!!)
         picsList?.itemAnimator = NoItemAnimator()
         picsList?.layoutManager = this.layoutManager
@@ -127,6 +128,10 @@ open class PictureFragment : LazyLoadFragment() {
         })
     }
 
+    override fun onLoadMoreData() {
+        loadMoreData()
+    }
+
     private fun loadMoreData() {
         if (!dataManager.isLoading()) {
             clear = false
@@ -151,6 +156,7 @@ open class PictureFragment : LazyLoadFragment() {
 
         isLoadMore = false
 
+        adapter.onLoadingError(false)
         refreshLayout?.isRefreshing = false
         if (picture?.comments != null) {
             items.addAll(picture.comments)
@@ -163,7 +169,7 @@ open class PictureFragment : LazyLoadFragment() {
         refreshLayout?.isRefreshing = false
         isLoadMore = false
         if (page > 1) page -= 1
-        Toasty.error(activity, error!!).show()
+        adapter.onLoadingError(true)
     }
 
     override fun onResume() {

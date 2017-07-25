@@ -26,6 +26,8 @@ import java.io.FileInputStream
  */
 class ImageFragment : LazyLoadFragment() {
 
+    private val TAG = "ImageFragment"
+
     private var largeImage: LargeImageView?= null
     private var gifImage: GifImageView?= null
     private var loadingProgress: ProgressBar? = null
@@ -48,13 +50,7 @@ class ImageFragment : LazyLoadFragment() {
 
                     override fun onResourceReady(resource: File?, animation: GlideAnimation<in File>?) {
                         super.onResourceReady(resource, animation)
-                        loadingProgress?.visibility = View.GONE
-                        if (picUrl.endsWith(".gif")) {
-                            val gifDrawable = GifDrawable(BufferedInputStream(FileInputStream(resource)))
-                            gifImage?.setImageDrawable(gifDrawable)
-                        } else {
-                            largeImage?.setImage(FileBitmapDecoderFactory(resource))
-                        }
+                        setImage(picUrl, resource)
                     }
 
                     override fun getSize(cb: SizeReadyCallback?) {
@@ -68,9 +64,13 @@ class ImageFragment : LazyLoadFragment() {
                 })
     }
 
-    override fun onDestroy() {
-        Glide.clear(largeImage)
-        Glide.clear(gifImage)
-        super.onDestroy()
+    private fun setImage(picUrl: String, resource: File?) {
+        loadingProgress?.visibility = View.GONE
+        if (picUrl.endsWith(".gif")) {
+            val gifDrawable = GifDrawable(BufferedInputStream(FileInputStream(resource)))
+            gifImage?.setImageDrawable(gifDrawable)
+        } else {
+            largeImage?.setImage(FileBitmapDecoderFactory(resource))
+        }
     }
 }

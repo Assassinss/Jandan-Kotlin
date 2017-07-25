@@ -1,7 +1,9 @@
 package me.zsj.dan.widget;
 
 import android.content.Context;
+import android.graphics.Bitmap;
 import android.util.AttributeSet;
+import android.view.ViewGroup;
 
 import me.zsj.dan.utils.ScreenUtils;
 import pl.droidsonroids.gif.GifImageView;
@@ -61,5 +63,26 @@ public class GifRatioScaleImageView extends GifImageView {
         } else {
             super.onMeasure(widthMeasureSpec, heightMeasureSpec);
         }
+    }
+
+    public void setImageView(Bitmap bitmap, int originalWidth, int originalHeight) {
+        float ratio = (float) originalWidth / (float) originalHeight;
+
+        int width = minWidth;
+        int height = 0;
+
+        if (originalWidth < minWidth) {
+            width = minWidth;
+            height = (int) ((float) width / ratio);
+        } else if (originalWidth >= minWidth) {
+            width = minWidth;
+            height = (int) ((float) width / ratio);
+        }
+
+        ViewGroup.LayoutParams params = getLayoutParams();
+        params.width = width;
+        params.height = height;
+        setLayoutParams(params);
+        setImageBitmap(bitmap);
     }
 }

@@ -11,15 +11,20 @@ import android.widget.ProgressBar
 import android.widget.TextView
 import butterknife.bindView
 import com.bumptech.glide.Glide
+import com.bumptech.glide.request.animation.GlideAnimation
+import com.bumptech.glide.request.target.SizeReadyCallback
+import com.bumptech.glide.request.target.Target
 import me.zsj.dan.R
 import me.zsj.dan.data.DataCallbackAdapter
 import me.zsj.dan.data.DataManager
-import me.zsj.dan.data.executor.DownloadExecutors
-import me.zsj.dan.data.executor.GifCallback
+import me.zsj.dan.glide.ProgressTarget
 import me.zsj.dan.model.NewDetail
 import me.zsj.dan.model.Post
 import me.zsj.dan.utils.DateUtils
 import pl.droidsonroids.gif.GifDrawable
+import java.io.BufferedInputStream
+import java.io.File
+import java.io.FileInputStream
 
 /**
  * @author zsj
@@ -100,17 +105,21 @@ class NewDetailActivity : AppCompatActivity(), View.OnClickListener {
                     .load(picUrl)
                     .into(cover)
         } else {
-            DownloadExecutors.INSTANCE
-                    .registerCallback(object : GifCallback {
-                        override fun onLoadingStart() {}
+            Glide.with(this)
+                    .load(picUrl)
+                    .downloadOnly(object : ProgressTarget<String, File>(picUrl, null) {
+                        override fun onProgress(bytesRead: Long, expectedLength: Long) {}
 
-                        override fun onLoadFinished(gifDrawable: GifDrawable) {
+                        override fun onResourceReady(resource: File?, animation: GlideAnimation<in File>?) {
+                            super.onResourceReady(resource, animation)
+                            val gifDrawable = GifDrawable(BufferedInputStream(FileInputStream(resource)))
                             cover.setImageDrawable(gifDrawable)
                         }
 
-                        override fun onLoadFailed() {}
+                        override fun getSize(cb: SizeReadyCallback?) {
+                            cb?.onSizeReady(Target.SIZE_ORIGINAL, Target.SIZE_ORIGINAL)
+                        }
                     })
-                    .downloadGif(this, picUrl)
         }
 
         title.text = post?.title

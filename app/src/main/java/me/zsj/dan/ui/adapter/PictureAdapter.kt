@@ -15,6 +15,8 @@ import me.zsj.dan.binder.Holder
 import me.zsj.dan.data.DataManager
 import me.zsj.dan.model.Comment
 import me.zsj.dan.ui.adapter.common.LoadingHolder
+import me.zsj.dan.ui.adapter.common.OnErrorListener
+import me.zsj.dan.ui.adapter.common.OnLoadDataListener
 import me.zsj.dan.visibility.items.ListItem
 import me.zsj.dan.visibility.scroll_utils.ItemsProvider
 import me.zsj.dan.widget.GifRatioScaleImageView
@@ -27,13 +29,21 @@ import pl.droidsonroids.gif.GifImageView
  */
 class PictureAdapter(var context: Activity, var comments: ArrayList<Comment>,
                      var dataManager: DataManager) :
-        RecyclerView.Adapter<RecyclerView.ViewHolder>(), ItemsProvider, ItemBinder.OnVoteListener {
+        RecyclerView.Adapter<RecyclerView.ViewHolder>(), ItemsProvider,
+        ItemBinder.OnVoteListener, OnErrorListener {
 
     private val GIF_TAG = ".gif"
     private var recyclerView: RecyclerView? = null
     private var singleItemBinder: SingleItemBinder? = null
     private var gifItemBinder: GifItemBinder? = null
     private var multiItemBinder: MultiItemBinder? = null
+    private var error: Boolean = false
+
+    private var onLoadDataListener: OnLoadDataListener? = null
+
+    fun setOnLoadDataListener(onLoadDataListener: OnLoadDataListener) {
+        this.onLoadDataListener = onLoadDataListener
+    }
 
     init {
         singleItemBinder = SingleItemBinder(dataManager)
@@ -80,6 +90,11 @@ class PictureAdapter(var context: Activity, var comments: ArrayList<Comment>,
         this.recyclerView = recyclerView
     }
 
+    override fun onLoadingError(error: Boolean) {
+        this.error = error
+        notifyItemChanged(comments.size)
+    }
+
     override fun onCreateViewHolder(parent: ViewGroup?, viewType: Int): RecyclerView.ViewHolder? {
         val inflater = LayoutInflater.from(context)
         if (viewType == R.layout.item_load_more) {
@@ -101,10 +116,11 @@ class PictureAdapter(var context: Activity, var comments: ArrayList<Comment>,
     override fun onBindViewHolder(holder: RecyclerView.ViewHolder?, position: Int) {
         if (getItemViewType(position) == R.layout.item_load_more) {
             holder as LoadingHolder
-            if (itemCount == 1) {
-                holder.progressBar.visibility = View.GONE
-            } else {
+            holder.showLoading(holder, itemCount, error)
+            holder.loadingContainer.setOnClickListener {
                 holder.progressBar.visibility = View.VISIBLE
+                holder.errorText.visibility = View.GONE
+                onLoadDataListener?.onLoadMoreData()
             }
         } else if (getItemViewType(position) == R.layout.item_single_pic) {
             val comment = comments[position]
@@ -165,19 +181,18 @@ class PictureAdapter(var context: Activity, var comments: ArrayList<Comment>,
 
         //TODO: 取消图片下载请求
         override fun deactivate(currentView: View?, position: Int) {
-            val gifImage = currentView?.findViewById(R.id.gif_picture)
+            val gifImageView = currentView?.findViewById(R.id.gif_picture)
             val playGif = currentView?.findViewById(R.id.play_gif)
             val loadingProgress = currentView?.findViewById(R.id.loading_progress)
-            if (gifImage != null && playGif != null && loadingProgress != null) {
-                gifImage as GifImageView
+            if (gifImageView != null && playGif != null && loadingProgress != null) {
+                gifImageView as GifImageView
                 playGif as ImageView
                 loadingProgress as ProgressBar
-                val gifDrawable = gifImage.drawable
+                val gifDrawable = gifImageView.drawable
                 if (gifDrawable is GifDrawable) {
                     playGif.visibility = View.VISIBLE
                     loadingProgress.visibility = View.GONE
-                    gifItemBinder?.stopGifAnimation(gifImage.drawable as GifDrawable)
-                    notifyItemChanged(position)
+                    gifItemBinder?.stopGifAnimation(gifImageView.drawable as GifDrawable)
                 }
             }
         }

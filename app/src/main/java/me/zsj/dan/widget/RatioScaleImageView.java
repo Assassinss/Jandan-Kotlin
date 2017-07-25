@@ -6,6 +6,7 @@ import android.graphics.BitmapFactory;
 import android.graphics.BitmapRegionDecoder;
 import android.graphics.Rect;
 import android.util.AttributeSet;
+import android.view.ViewGroup;
 
 import com.shizhefei.view.largeimage.LargeImageView;
 
@@ -40,7 +41,6 @@ public class RatioScaleImageView extends LargeImageView {
 
     public RatioScaleImageView(Context context, AttributeSet attrs, int defStyleAttr) {
         super(context, attrs, defStyleAttr);
-
         minWidth = ScreenUtils.getScreenWidth(context) - ScreenUtils.dpToPx(10);
         maxHeight = ScreenUtils.getScreenHeight(context) - ScreenUtils.dpToPx(56);
         screenHeight = ScreenUtils.getScreenHeight(context);
@@ -107,9 +107,11 @@ public class RatioScaleImageView extends LargeImageView {
         }
     }
 
-    public void setBigImage(final File resource, BitmapFactory.Options tmpOptions) {
+    public void setBigImage(final File resource, int width) {
         try {
-            int width = tmpOptions.outWidth;
+            BitmapFactory.Options tmpOptions = new BitmapFactory.Options();
+            tmpOptions.inJustDecodeBounds = true;
+            tmpOptions.inPreferredConfig = Bitmap.Config.RGB_565;
             BitmapRegionDecoder regionDecoder = BitmapRegionDecoder.newInstance(resource.getPath(), false);
             setOriginalSize(width, minHeight);
             Bitmap bitmap = regionDecoder.decodeRegion(new Rect(0, 0, width, minHeight), tmpOptions);
@@ -117,6 +119,27 @@ public class RatioScaleImageView extends LargeImageView {
         } catch (IOException e) {
             e.printStackTrace();
         }
+    }
+
+    public void setImageView(Bitmap bitmap, int originalWidth, int originalHeight) {
+        float ratio = (float) originalWidth / (float) originalHeight;
+
+        int width = minWidth;
+        int height = 0;
+
+        if (originalWidth < minWidth) {
+            width = minWidth;
+            height = (int) ((float) width / ratio);
+        } else if (originalWidth >= minWidth) {
+            width = minWidth;
+            height = (int) ((float) width / ratio);
+        }
+
+        ViewGroup.LayoutParams params = getLayoutParams();
+        params.width = width;
+        params.height = height;
+        setLayoutParams(params);
+        setImage(bitmap);
     }
 
 }

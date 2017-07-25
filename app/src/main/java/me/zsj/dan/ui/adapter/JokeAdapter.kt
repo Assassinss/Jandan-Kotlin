@@ -13,15 +13,24 @@ import me.zsj.dan.binder.Holder
 import me.zsj.dan.data.DataManager
 import me.zsj.dan.model.Comment
 import me.zsj.dan.ui.adapter.common.LoadingHolder
+import me.zsj.dan.ui.adapter.common.OnErrorListener
+import me.zsj.dan.ui.adapter.common.OnLoadDataListener
 
 /**
  * @author zsj
  */
 class JokeAdapter(var context: Activity, var comments: ArrayList<Comment>,
                   var dataManager: DataManager) :
-        RecyclerView.Adapter<RecyclerView.ViewHolder>(), ItemBinder.OnVoteListener {
+        RecyclerView.Adapter<RecyclerView.ViewHolder>(), ItemBinder.OnVoteListener, OnErrorListener {
 
     private var itemBinder: ItemBinder? = null
+    private var error: Boolean = false
+
+    private var onLoadDataListener: OnLoadDataListener? = null
+
+    fun setOnLoadDataListener(onLoadDataListener: OnLoadDataListener) {
+        this.onLoadDataListener = onLoadDataListener
+    }
 
     init {
         itemBinder = ItemBinder(dataManager)
@@ -38,6 +47,11 @@ class JokeAdapter(var context: Activity, var comments: ArrayList<Comment>,
         itemBinder?.updateVoteNegative(context, holder, result)
     }
 
+    override fun onLoadingError(error: Boolean) {
+        this.error = error
+        notifyItemChanged(comments.size)
+    }
+
     override fun onCreateViewHolder(parent: ViewGroup?, viewType: Int): RecyclerView.ViewHolder? {
         if (viewType == R.layout.item_load_more) {
             val view = LayoutInflater.from(context).inflate(R.layout.item_load_more, parent, false)
@@ -52,10 +66,11 @@ class JokeAdapter(var context: Activity, var comments: ArrayList<Comment>,
     override fun onBindViewHolder(holder: RecyclerView.ViewHolder?, position: Int) {
         if (getItemViewType(position) == R.layout.item_load_more) {
             holder as LoadingHolder
-            if (itemCount == 1) {
-                holder.progressBar.visibility = View.GONE
-            } else {
+            holder.showLoading(holder, itemCount, error)
+            holder.loadingContainer.setOnClickListener {
                 holder.progressBar.visibility = View.VISIBLE
+                holder.errorText.visibility = View.GONE
+                onLoadDataListener?.onLoadMoreData()
             }
         } else if (getItemViewType(position) == R.layout.item_joke) {
             holder as JokeHolder

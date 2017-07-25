@@ -38,7 +38,7 @@
                 android:id="@+id/picture"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:background="@color/gray_400"
+                android:background="@color/gray_300"
                 android:minHeight="200dp"
                 tools:layout_height="200dp" />
 

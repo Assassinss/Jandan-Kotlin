@@ -30,11 +30,15 @@
             </intent-filter>
         </activity>
 
-        <activity android:name=".ui.NewDetailActivity" />
+        <activity
+            android:name=".ui.NewDetailActivity"
+            android:parentActivityName=".ui.HomeActivity" />
 
         <activity android:name=".ui.ImageActivity" />
 
-        <activity android:name=".ui.CommentActivity"/>
+        <activity
+            android:name=".ui.CommentActivity"
+            android:parentActivityName=".ui.NewDetailActivity" />
 
         <activity android:name=".ui.TucaoActivity" />
 
@@ -46,8 +50,7 @@
 
         </activity>
 
-        <activity android:name=".test.ActivityLoadTest">
-        </activity>
+        <activity android:name=".test.ActivityLoadTest"></activity>
 
     </application>
 

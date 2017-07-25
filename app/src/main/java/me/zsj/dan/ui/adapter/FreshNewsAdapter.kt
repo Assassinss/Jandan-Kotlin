@@ -17,6 +17,8 @@ import me.zsj.dan.R
 import me.zsj.dan.model.Post
 import me.zsj.dan.ui.NewDetailActivity
 import me.zsj.dan.ui.adapter.common.LoadingHolder
+import me.zsj.dan.ui.adapter.common.OnErrorListener
+import me.zsj.dan.ui.adapter.common.OnLoadDataListener
 import me.zsj.dan.utils.DateUtils
 import java.util.*
 
@@ -24,7 +26,14 @@ import java.util.*
  * @author zsj
  */
 class FreshNewsAdapter(var context: Activity, var freshNewsList: ArrayList<Post>) :
-        RecyclerView.Adapter<RecyclerView.ViewHolder>() {
+        RecyclerView.Adapter<RecyclerView.ViewHolder>(), OnErrorListener {
+
+    private var error: Boolean = false
+    private var onLoadDataListener: OnLoadDataListener? = null
+
+    fun setOnLoadDataListener(onLoadDataListener: OnLoadDataListener) {
+        this.onLoadDataListener = onLoadDataListener
+    }
 
     override fun onCreateViewHolder(parent: ViewGroup?, viewType: Int): RecyclerView.ViewHolder? {
         if (viewType == R.layout.item_load_more) {
@@ -37,14 +46,20 @@ class FreshNewsAdapter(var context: Activity, var freshNewsList: ArrayList<Post>
         return null
     }
 
+    override fun onLoadingError(error: Boolean) {
+        this.error = error
+        notifyItemChanged(freshNewsList.size)
+    }
+
     @SuppressLint("StringFormatMatches")
     override fun onBindViewHolder(holder: RecyclerView.ViewHolder?, position: Int) {
         if (getItemViewType(position) == R.layout.item_load_more) {
             holder as LoadingHolder
-            if (itemCount == 1) {
-                holder.progressBar.visibility = View.GONE
-            } else {
+            holder.showLoading(holder, itemCount, error)
+            holder.loadingContainer.setOnClickListener {
                 holder.progressBar.visibility = View.VISIBLE
+                holder.errorText.visibility = View.GONE
+                onLoadDataListener?.onLoadMoreData()
             }
         } else if (getItemViewType(position) == R.layout.item_news) {
             holder as NewsHolder

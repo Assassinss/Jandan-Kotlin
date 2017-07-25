@@ -6,6 +6,7 @@
 
     <color name="transparent_70">#77000000</color>
     <color name="transparent_80">#88000000</color>
+    <color name="gray_300">#e0e0e0</color>
     <color name="gray_400">#bdbdbd</color>
     <color name="gray_600">#757575</color>
     <color name="gray_700">#616161</color>
