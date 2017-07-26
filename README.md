@@ -2,10 +2,9 @@
 Unofficial Android client of Jandan([煎蛋](http://www.coolapk.com/apk/com.danielstudio.app.wowtu)), implemented using Kotlin.
 
 ## Screenshot
-<img src="screenshots/Screenshot_20170709-115610.png" width="216" height="384"> <img src="screenshots/Screenshot_20170709-115615.png" width="216" height="384"> <img src="screenshots/Screenshot_20170709-115625.png" width="216" height="384">
-<img src="screenshots/Screenshot_20170709-115629.png" width="216" height="384"> <img src="screenshots/Screenshot_20170709-115643.png" width="216" height="384"> <img src="screenshots/Screenshot_20170709-115649.png" width="216" height="384">
-<img src="screenshots/Screenshot_20170709-115743.png" width="216" height="384"> 
-
+<img src="screenshots/Screenshot_20170709-115610.png" width="216" height="384"> <img src="screenshots/Screenshot_20170726-203445.png.png" width="216" height="384"><img src="screenshots/Screenshot_20170709-115615.png" width="216" height="384"> 
+<img src="screenshots/Screenshot_20170709-115625.png" width="216" height="384"> <img src="screenshots/Screenshot_20170709-115629.png" width="216" height="384"> <img src="screenshots/Screenshot_20170709-115643.png" width="216" height="384">
+<img src="screenshots/Screenshot_20170709-115649.png" width="216" height="384"> <img src="screenshots/Screenshot_20170709-115743.png" width="216" height="384"> 
 ## Thanks 
 * [VideoListPlayer](https://github.com/waynell/VideoListPlayer)
 * [list-visibility-utils](https://github.com/danylovolokh/VideoPlayerManager/tree/master/list-visibility-utils)
