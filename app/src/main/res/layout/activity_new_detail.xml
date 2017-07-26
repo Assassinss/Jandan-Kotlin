@@ -11,8 +11,7 @@
 
         <RelativeLayout
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:background="@android:color/white">
+            android:layout_height="wrap_content">
 
             <ImageView
                 android:id="@+id/cover"
@@ -31,7 +30,7 @@
                 android:layout_marginStart="16dp"
                 android:layout_marginTop="32dp"
                 android:gravity="center"
-                android:textColor="@android:color/black"
+                android:textColor="@color/item_text_content_color"
                 android:textSize="24sp"
                 tools:text="这是一条很煎蛋的标题" />
 
@@ -47,7 +46,7 @@
                     android:id="@+id/author"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:textColor="@android:color/black"
+                    android:textColor="@color/item_text_content_color"
                     tools:text="煎蛋蛋" />
 
                 <TextView
@@ -55,6 +54,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginStart="10dp"
+                    android:textColor="@color/item_text_color"
                     tools:text="06-23" />
 
             </LinearLayout>
@@ -67,6 +67,7 @@
                 android:layout_margin="16dp"
                 android:gravity="center"
                 android:textSize="16sp"
+                android:textColor="@color/item_text_color"
                 tools:text="你可以停下气体交换的过程，那么你能一直屏住呼吸吗？" />
 
             <View
@@ -115,13 +116,13 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_gravity="bottom"
-        android:background="@android:color/white"
+        android:background="@color/new_detail_more_container_bg"
         android:elevation="4dp">
 
         <View
             android:layout_width="match_parent"
             android:layout_height="1px"
-            android:background="@color/gray_400" />
+            android:background="@color/line_divider" />
 
         <ImageView
             android:id="@+id/action_back"

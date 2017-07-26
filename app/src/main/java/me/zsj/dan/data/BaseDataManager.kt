@@ -49,7 +49,7 @@ open class BaseDataManager(context: Activity) {
         }
         if (NetUtils.checkNet(context)) {
             originalResponse.newBuilder()
-                    .header("Cache-Control", "public, max-age=86400,")
+                    .header("Cache-Control", "public, max-age=604800")
                     .removeHeader("Pragma")
                     .build()
         } else {

@@ -21,5 +21,7 @@
     <string name="action_copy_text">复制文字内容</string>
     <string name="category_comment_rank">热门评论</string>
     <string name="category_comment_normal">最新评论</string>
+    <string name="night_theme_mode">夜间模式</string>
+    <string name="day_theme_mode">日间模式</string>
 
 </resources>

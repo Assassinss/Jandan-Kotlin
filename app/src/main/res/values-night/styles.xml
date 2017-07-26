@@ -1,15 +1,11 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
 
-    <style name="AppTheme" parent="Theme.AppCompat.Light.NoActionBar">
-        <!-- Customize your theme here. -->
-        <item name="colorPrimary">@color/colorPrimary</item>
-        <item name="colorPrimaryDark">@color/colorPrimaryDark</item>
-        <item name="colorAccent">@color/colorAccent</item>
+    <style name="DarkToolbarThemeOverlay" parent="Widget.AppCompat.ActionBar">
+        <item name="android:colorControlNormal">@color/title_text_color</item>
+        <item name="titleTextColor">@color/gray_600</item>
     </style>
 
-    <style name="DarkToolbarThemeOverlay" parent="Widget.AppCompat.ActionBar">
-        <item name="android:colorControlNormal">@android:color/white</item>
-    </style>
+    <style name="DarkToolbarPopupThemeOverlay" parent="ThemeOverlay.AppCompat.Dark"/>
 
 </resources>

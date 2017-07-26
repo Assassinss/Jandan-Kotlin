@@ -95,7 +95,7 @@ open class ItemBinder(var dataManager: DataManager) {
 
 
     fun bindCommonData(context: Activity, holder: Holder, comment: Comment) {
-        val color_gray_600 = context.loadColor(R.color.gray_600)
+        val color_gray_600 = context.loadColor(R.color.item_text_color)
         holder.votePositive.setTextColor(color_gray_600)
         holder.voteNegative.setTextColor(color_gray_600)
 

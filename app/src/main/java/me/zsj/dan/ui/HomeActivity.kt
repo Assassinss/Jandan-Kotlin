@@ -1,9 +1,11 @@
 package me.zsj.dan.ui
 
+import android.content.res.Configuration
 import android.os.Bundle
 import android.support.design.widget.TabLayout
 import android.support.v4.view.ViewPager
 import android.support.v7.app.AppCompatActivity
+import android.support.v7.app.AppCompatDelegate
 import android.support.v7.widget.RecyclerView
 import android.support.v7.widget.Toolbar
 import android.view.Menu
@@ -15,6 +17,8 @@ import me.zsj.dan.ui.fragment.BoringFragment
 import me.zsj.dan.ui.fragment.FreshNewsFragment
 import me.zsj.dan.ui.fragment.JokeFragment
 import me.zsj.dan.ui.fragment.MeiziFragment
+import me.zsj.dan.utils.PreferenceManager
+import java.lang.Exception
 
 /**
  * @author zsj
@@ -86,12 +90,43 @@ class HomeActivity : AppCompatActivity() {
 
     override fun onCreateOptionsMenu(menu: Menu?): Boolean {
         menuInflater.inflate(R.menu.menu_home, menu)
+        val menuItem = menu?.getItem(0)
+        val currentThemeMode = resources.configuration.uiMode and Configuration.UI_MODE_NIGHT_MASK
+        if (currentThemeMode == Configuration.UI_MODE_NIGHT_YES) {
+            menuItem?.title = getString(R.string.day_theme_mode)
+        } else {
+            menuItem?.title = getString(R.string.night_theme_mode)
+        }
         return true
+    }
+
+    override fun recreate() {
+        try {
+            val fragmentTransaction = supportFragmentManager.beginTransaction()
+            for (fragment in adapter!!.fragments) {
+                fragmentTransaction.remove(fragment)
+            }
+            fragmentTransaction.commit()
+        } catch (e: Exception) { }
+        super.recreate()
     }
 
     override fun onOptionsItemSelected(item: MenuItem?): Boolean {
         if (item!!.itemId == R.id.settings) {
             //go to settings activity
+        } else if (item.itemId == R.id.action_change_theme) {
+            val currentThemeMode = resources.configuration.uiMode and Configuration.UI_MODE_NIGHT_MASK
+            when (currentThemeMode) {
+                Configuration.UI_MODE_NIGHT_YES -> {
+                    AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_NO)
+                    PreferenceManager.putBoolean(this, PreferenceManager.DAY, true)
+                }
+                Configuration.UI_MODE_NIGHT_NO -> {
+                    AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_YES)
+                    PreferenceManager.putBoolean(this, PreferenceManager.DAY, false)
+                }
+            }
+            recreate()
         }
         return super.onOptionsItemSelected(item)
     }

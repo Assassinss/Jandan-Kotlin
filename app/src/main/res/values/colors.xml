@@ -10,7 +10,15 @@
     <color name="gray_400">#bdbdbd</color>
     <color name="gray_600">#757575</color>
     <color name="gray_700">#616161</color>
-    <color name="tab_text_color">#bdbdbd</color>
+    <color name="item_new_title_color">#000000</color>
+    <color name="item_text_color">#757575</color>
     <color name="divider">#1f000000</color> <!-- 12% black -->
+    <color name="tab_indicator_color">#ffffff</color>
+    <color name="tab_selected_color">#ffffff</color>
+    <color name="tab_text_color">#bdbdbd</color>
+    <color name="item_text_content_color">#000000</color>
+    <color name="new_detail_bg">#ffffff</color>
+    <color name="new_detail_more_container_bg">#ffffff</color>
+    <color name="line_divider">#bdbdbd</color>
 
 </resources>

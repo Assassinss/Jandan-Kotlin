@@ -21,6 +21,7 @@ import me.zsj.dan.glide.ProgressTarget
 import me.zsj.dan.model.NewDetail
 import me.zsj.dan.model.Post
 import me.zsj.dan.utils.DateUtils
+import me.zsj.dan.utils.PreferenceManager
 import pl.droidsonroids.gif.GifDrawable
 import java.io.BufferedInputStream
 import java.io.File
@@ -141,6 +142,14 @@ class NewDetailActivity : AppCompatActivity(), View.OnClickListener {
     }
 
     private fun createHtml(content: String?) : String {
+        var bodyBackground = "#fafafa"
+        var textColor = "#000000"
+        var blockquoteBg = "#f5f5f5"
+        if (!PreferenceManager.getBoolean(this, PreferenceManager.DAY)) {
+            bodyBackground = "#424242"
+            textColor = "#bdbdbd"
+            blockquoteBg = "#212121"
+        }
         return  """
         <!DOCTYPE html><html><head>
             <script type="text/javascript">
@@ -154,10 +163,10 @@ class NewDetailActivity : AppCompatActivity(), View.OnClickListener {
                 };
             </script>
             <style>
-                body {padding: 8px; background-color: #ffffff}
-                p { font-size:18px; line-height: 24px; padding:5px 0}
+                body {padding: 8px; background-color: $bodyBackground}
+                p { color: $textColor; font-size:18px; line-height: 24px; padding:5px 0}
                 img { display: block; margin: 0 auto; width: 100%; height: auto}
-                blockquote { background-color: #f5f5f5; margin: 0; padding: 12px}
+                blockquote { background-color: $blockquoteBg; margin: 0; padding: 12px}
                 em { font-size: 14px; color:#757575 }
                 a { color: #e53935}
                 iframe { display: block; margin: 0 auto; width: 100%; height: auto }

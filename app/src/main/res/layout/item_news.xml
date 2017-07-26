@@ -16,8 +16,8 @@
         android:layout_marginEnd="132dp"
         android:ellipsize="end"
         android:maxLines="2"
-        android:paddingRight="132dp"
-        android:textColor="@android:color/black"
+        android:paddingRight="116dp"
+        android:textColor="@color/item_new_title_color"
         android:textSize="16sp"
         tools:ignore="RtlHardcoded,RtlSymmetry"
         tools:text="这是一条煎蛋的标题." />
@@ -27,6 +27,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:textSize="12sp"
+        android:textColor="@color/item_text_color"
         app:layout_constraintBottom_toBottomOf="@+id/cover"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/title"
@@ -39,6 +40,7 @@
         android:layout_height="wrap_content"
         android:layout_marginStart="8dp"
         android:textSize="12sp"
+        android:textColor="@color/item_text_color"
         app:layout_constraintStart_toEndOf="@id/author"
         app:layout_constraintTop_toTopOf="@+id/author"
         tools:text="1小时前" />
@@ -49,6 +51,7 @@
         android:layout_height="wrap_content"
         android:layout_marginEnd="16dp"
         android:textSize="12sp"
+        android:textColor="@color/item_text_color"
         app:layout_constraintBottom_toBottomOf="@+id/cover"
         app:layout_constraintEnd_toStartOf="@id/cover"
         tools:text="3评论" />

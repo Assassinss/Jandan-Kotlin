@@ -18,10 +18,9 @@
             android:layout_height="wrap_content"
             android:minWidth="?actionBarSize"
             app:layout_scrollFlags="scroll|enterAlways|snap"
-            app:popupTheme="@style/ThemeOverlay.AppCompat.Light"
+            app:popupTheme="@style/DarkToolbarPopupThemeOverlay"
             app:theme="@style/DarkToolbarThemeOverlay"
-            app:title="@string/app_name"
-            app:titleTextColor="@android:color/white" />
+            app:title="@string/app_name" />
 
         <android.support.design.widget.TabLayout
             android:id="@+id/tabs"
