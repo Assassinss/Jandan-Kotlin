@@ -15,7 +15,7 @@ class App : Application() {
     }
 
     private fun setTheme() {
-        val day = PreferenceManager.getBoolean(this, PreferenceManager.DAY)
+        val day = PreferenceManager.getBoolean(this, PreferenceManager.DAY, true)
         if (day) {
             AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_NO)
         } else {
