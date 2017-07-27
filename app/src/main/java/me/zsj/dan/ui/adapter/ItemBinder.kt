@@ -1,6 +1,7 @@
 package me.zsj.dan.ui.adapter
 
 import android.app.Activity
+import android.content.ClipboardManager
 import android.content.Context
 import android.content.Intent
 import android.graphics.Color
@@ -10,6 +11,8 @@ import android.support.v7.widget.PopupMenu
 import android.util.Log
 import android.view.Gravity
 import android.view.View
+import android.widget.Toast
+import es.dmoral.toasty.Toasty
 import me.zsj.dan.R
 import me.zsj.dan.binder.Holder
 import me.zsj.dan.data.BaseDataManager
@@ -18,6 +21,7 @@ import me.zsj.dan.model.Comment
 import me.zsj.dan.ui.ImageActivity
 import me.zsj.dan.ui.TucaoActivity
 import me.zsj.dan.utils.DateUtils
+import me.zsj.dan.utils.getStr
 import me.zsj.dan.utils.loadColor
 import me.zsj.dan.utils.shortToast
 import okhttp3.Call
@@ -50,13 +54,26 @@ open class ItemBinder(var dataManager: DataManager) {
         actionMenu.inflate(R.menu.menu_more)
         actionMenu.setOnMenuItemClickListener { item->
             if (item.itemId == R.id.action_share) {
-                //TODO: share item
+                shareTextContent(view.context, comment)
             } else if (item.itemId == R.id.action_copy) {
-                //TODO: copy text content
+                copyText(view.context, comment)
             }
             true
         }
         actionMenu.show()
+    }
+
+    fun shareTextContent(context: Context, comment: Comment) {
+        val intent = Intent(Intent.ACTION_SEND)
+        intent.putExtra(Intent.EXTRA_TEXT, comment.textContent)
+        intent.type = "text/plain"
+        context.startActivity(intent)
+    }
+
+    fun copyText(context: Context, comment: Comment) {
+        val cbm = context.getSystemService(Context.CLIPBOARD_SERVICE) as ClipboardManager
+        cbm.text = comment.textContent
+        Toasty.success(context, context.getStr(R.string.copy_to_clipboard), Toast.LENGTH_LONG).show()
     }
 
     fun voteOO(holder: Holder, ID: String) {

@@ -23,5 +23,6 @@
     <string name="category_comment_normal">最新评论</string>
     <string name="night_theme_mode">夜间模式</string>
     <string name="day_theme_mode">日间模式</string>
+    <string name="copy_to_clipboard">已复制到粘贴板</string>
 
 </resources>
