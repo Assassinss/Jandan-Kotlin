@@ -34,9 +34,9 @@ class ImageFragment : LazyLoadFragment() {
 
     override fun initViews(inflater: LayoutInflater?, container: ViewGroup?, savedInstanceState: Bundle?): View {
         val view = inflater!!.inflate(R.layout.fragment_image, container, false)
-        largeImage = view.findViewById(R.id.large_image) as LargeImageView
-        gifImage = view.findViewById(R.id.gif_image) as GifImageView
-        loadingProgress = view.findViewById(R.id.loading_progress) as ProgressBar
+        largeImage = view.findViewById(R.id.large_image)
+        gifImage = view.findViewById(R.id.gif_image)
+        loadingProgress = view.findViewById(R.id.loading_progress)
         return view
     }
 

@@ -9,7 +9,7 @@ import android.view.ViewGroup
 import android.widget.ImageView
 import android.widget.ProgressBar
 import android.widget.TextView
-import butterknife.bindView
+import kotterknife.bindView
 import me.zsj.dan.R
 import me.zsj.dan.binder.Holder
 import me.zsj.dan.data.DataManager
@@ -181,13 +181,10 @@ class PictureAdapter(var context: Activity, var comments: ArrayList<Comment>,
 
         //TODO: 取消图片下载请求
         override fun deactivate(currentView: View?, position: Int) {
-            val gifImageView = currentView?.findViewById(R.id.gif_picture)
-            val playGif = currentView?.findViewById(R.id.play_gif)
-            val loadingProgress = currentView?.findViewById(R.id.loading_progress)
+            val gifImageView = currentView?.findViewById<GifRatioScaleImageView>(R.id.gif_picture)
+            val playGif = currentView?.findViewById<ImageView>(R.id.play_gif)
+            val loadingProgress = currentView?.findViewById<ProgressBar>(R.id.loading_progress)
             if (gifImageView != null && playGif != null && loadingProgress != null) {
-                gifImageView as GifImageView
-                playGif as ImageView
-                loadingProgress as ProgressBar
                 val gifDrawable = gifImageView.drawable
                 if (gifDrawable is GifDrawable) {
                     playGif.visibility = View.VISIBLE

@@ -32,8 +32,8 @@ class JokeFragment : LazyLoadFragment(), RecyclerViewExtensions, OnLoadDataListe
 
     override fun initViews(inflater: LayoutInflater?, container: ViewGroup?, savedInstanceState: Bundle?): View {
         val view = inflater!!.inflate(R.layout.fragment_joke, container, false)
-        refreshLayout = view.findViewById(R.id.swipe_refresh_layout) as SwipeRefreshLayout
-        recyclerView = view.findViewById(R.id.joke_list) as RecyclerView
+        refreshLayout = view.findViewById(R.id.swipe_refresh_layout)
+        recyclerView = view.findViewById(R.id.joke_list)
         return view
     }
 

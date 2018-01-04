@@ -34,8 +34,8 @@ class FreshNewsFragment : LazyLoadFragment(), RecyclerViewExtensions, OnLoadData
 
     override fun initViews(inflater: LayoutInflater?, container: ViewGroup?, savedInstanceState: Bundle?): View {
         val view = inflater!!.inflate(R.layout.fragment_fresh_news, container, false)
-        refreshLayout = view.findViewById(R.id.swipe_refresh_layout) as SwipeRefreshLayout
-        newsList = view.findViewById(R.id.news_list) as RecyclerView
+        refreshLayout = view.findViewById(R.id.swipe_refresh_layout)
+        newsList = view.findViewById(R.id.news_list)
         return view
     }
 

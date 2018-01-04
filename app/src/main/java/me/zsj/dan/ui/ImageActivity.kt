@@ -16,7 +16,7 @@ import android.support.v7.app.AppCompatActivity
 import android.view.View
 import android.widget.ImageView
 import android.widget.TextView
-import butterknife.bindView
+import kotterknife.bindView
 import me.zsj.dan.R
 import me.zsj.dan.data.executor.DownloadCallback
 import me.zsj.dan.data.executor.DownloadExecutors

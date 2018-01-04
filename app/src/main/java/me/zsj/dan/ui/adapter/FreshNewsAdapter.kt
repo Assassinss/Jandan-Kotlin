@@ -10,9 +10,9 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.ImageView
 import android.widget.TextView
-import butterknife.bindView
 import com.bumptech.glide.Glide
 import com.bumptech.glide.load.engine.DiskCacheStrategy
+import kotterknife.bindView
 import me.zsj.dan.R
 import me.zsj.dan.model.Post
 import me.zsj.dan.ui.NewDetailActivity

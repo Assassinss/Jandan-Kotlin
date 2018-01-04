@@ -48,8 +48,8 @@ open class PictureFragment : LazyLoadFragment(), OnLoadDataListener {
 
     override fun initViews(inflater: LayoutInflater?, container: ViewGroup?, savedInstanceState: Bundle?): View {
         val view = inflater!!.inflate(R.layout.fragment_picture, container, false)
-        refreshLayout = view.findViewById(R.id.swipe_refresh_layout) as SwipeRefreshLayout
-        picsList = view.findViewById(R.id.pic_list) as RecyclerView
+        refreshLayout = view.findViewById(R.id.swipe_refresh_layout)
+        picsList = view.findViewById(R.id.pic_list)
         return view
     }
 

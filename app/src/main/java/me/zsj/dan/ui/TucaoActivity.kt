@@ -8,8 +8,8 @@ import android.support.v7.widget.Toolbar
 import android.view.View
 import android.widget.TextView
 import android.widget.Toast
-import butterknife.bindView
 import es.dmoral.toasty.Toasty
+import kotterknife.bindView
 import me.zsj.dan.R
 import me.zsj.dan.data.DataCallbackAdapter
 import me.zsj.dan.data.DataManager

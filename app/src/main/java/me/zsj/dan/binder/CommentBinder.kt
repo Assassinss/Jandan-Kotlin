@@ -4,7 +4,7 @@ import android.support.v7.widget.RecyclerView
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import butterknife.bindView
+import kotterknife.bindView
 import me.drakeet.multitype.ItemViewBinder
 import me.zsj.dan.R
 import me.zsj.dan.model.Comment

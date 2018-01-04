@@ -6,7 +6,7 @@ import android.text.Html
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import butterknife.bindView
+import kotterknife.bindView
 import me.zsj.dan.R
 import me.zsj.dan.model.Comment
 import me.zsj.dan.utils.DateUtils

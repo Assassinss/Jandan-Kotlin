@@ -11,7 +11,7 @@ import android.support.v7.widget.Toolbar
 import android.view.Menu
 import android.view.MenuItem
 import android.widget.LinearLayout
-import butterknife.bindView
+import kotterknife.bindView
 import me.zsj.dan.R
 import me.zsj.dan.ui.fragment.BoringFragment
 import me.zsj.dan.ui.fragment.FreshNewsFragment
@@ -60,30 +60,30 @@ class HomeActivity : AppCompatActivity() {
     private fun setupTabClickListener() {
         (tabLayout.getChildAt(0) as LinearLayout).getChildAt(0).setOnClickListener {
             val fragment = adapter?.getItem(0) as FreshNewsFragment
-            val recyclerView = fragment.view?.findViewById(R.id.news_list) as RecyclerView
+            val recyclerView = fragment.view?.findViewById<RecyclerView>(R.id.news_list)
             if (pager.currentItem == 0) {
-                recyclerView.scrollToPosition(0)
+                recyclerView?.scrollToPosition(0)
             }
         }
         (tabLayout.getChildAt(0) as LinearLayout).getChildAt(1).setOnClickListener {
             val fragment = adapter?.getItem(1) as BoringFragment
-            val recyclerView = fragment.view?.findViewById(R.id.pic_list) as RecyclerView
+            val recyclerView = fragment.view?.findViewById<RecyclerView>(R.id.pic_list)
             if (pager.currentItem == 1) {
-                recyclerView.scrollToPosition(0)
+                recyclerView?.scrollToPosition(0)
             }
         }
         (tabLayout.getChildAt(0) as LinearLayout).getChildAt(2).setOnClickListener {
             val fragment = adapter?.getItem(2) as MeiziFragment
-            val recyclerView = fragment.view?.findViewById(R.id.pic_list) as RecyclerView
+            val recyclerView = fragment.view?.findViewById<RecyclerView>(R.id.pic_list)
             if (pager.currentItem == 2) {
-                recyclerView.scrollToPosition(0)
+                recyclerView?.scrollToPosition(0)
             }
         }
         (tabLayout.getChildAt(0) as LinearLayout).getChildAt(3).setOnClickListener {
             val fragment = adapter?.getItem(3) as JokeFragment
-            val recyclerView = fragment.view?.findViewById(R.id.joke_list) as RecyclerView
+            val recyclerView = fragment.view?.findViewById<RecyclerView>(R.id.joke_list)
             if (pager.currentItem == 3) {
-                recyclerView.scrollToPosition(0)
+                recyclerView?.scrollToPosition(0)
             }
         }
     }

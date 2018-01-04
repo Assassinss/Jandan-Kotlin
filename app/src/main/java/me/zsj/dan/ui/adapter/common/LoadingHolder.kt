@@ -5,7 +5,7 @@ import android.view.View
 import android.widget.FrameLayout
 import android.widget.ProgressBar
 import android.widget.TextView
-import butterknife.bindView
+import kotterknife.bindView
 import me.zsj.dan.R
 
 /**

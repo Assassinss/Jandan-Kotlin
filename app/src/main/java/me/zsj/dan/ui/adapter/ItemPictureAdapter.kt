@@ -6,8 +6,8 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.ImageView
-import butterknife.bindView
 import com.bumptech.glide.Glide
+import kotterknife.bindView
 import me.zsj.dan.R
 import me.zsj.dan.ui.ImageActivity
 import me.zsj.dan.widget.RatioImageView
