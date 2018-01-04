@@ -142,13 +142,18 @@ class NewDetailActivity : AppCompatActivity(), View.OnClickListener {
     }
 
     private fun createHtml(content: String?) : String {
-        var bodyBackground = "#fafafa"
-        var textColor = "#000000"
-        var blockquoteBg = "#f5f5f5"
-        if (!PreferenceManager.getBoolean(this, PreferenceManager.DAY)) {
+        var bodyBackground = ""
+        var textColor = ""
+        var blockquoteBg = ""
+        val isDay = PreferenceManager.getBoolean(this, PreferenceManager.DAY, true)
+        if (!isDay) {
             bodyBackground = "#424242"
             textColor = "#bdbdbd"
             blockquoteBg = "#212121"
+        } else {
+            bodyBackground = "#fafafa"
+            textColor = "#000000"
+            blockquoteBg = "#f5f5f5"
         }
         return  """
         <!DOCTYPE html><html><head>
