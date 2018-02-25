@@ -11,15 +11,18 @@ import android.widget.Toast
 import es.dmoral.toasty.Toasty
 import kotterknife.bindView
 import me.zsj.dan.R
-import me.zsj.dan.data.DataCallbackAdapter
+import me.zsj.dan.data.Callback
 import me.zsj.dan.data.DataManager
+import me.zsj.dan.data.ICall
+import me.zsj.dan.data.api.DataApi
 import me.zsj.dan.model.TucaoData
 import me.zsj.dan.ui.adapter.TucaoAdapter
+import retrofit2.Call
 
 /**
  * @author zsj
  */
-class TucaoActivity : AppCompatActivity() {
+class TucaoActivity : AppCompatActivity(), ICall<TucaoData> {
 
     companion object {
         val ID = "id"
@@ -36,6 +39,11 @@ class TucaoActivity : AppCompatActivity() {
 
     private lateinit var dataManager: DataManager
 
+
+    override fun createCall(arg: Any?): Call<TucaoData> {
+        return dataManager.createApi(DataApi::class.java)!!.loadTucao(arg as String)
+    }
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_tucao)
@@ -48,36 +56,37 @@ class TucaoActivity : AppCompatActivity() {
 
         dataManager = DataManager(this)
 
-        dataManager.registerDataCallback(object : DataCallbackAdapter() {
-            override fun onLoadTucao(tucaoData: TucaoData?) {
+        refreshLayout.isRefreshing = true
+        dataManager.loadData(createCall(id))
+
+        dataManager.setCallback(object : Callback {
+            override fun onSuccess(data: Any?) {
                 refreshLayout.isRefreshing = false
-                if (tucaoData?.comments != null) {
-                    if (tucaoData.comments.size == 0) {
+                data as TucaoData
+                if (data.comments != null) {
+                    if (data.comments.size == 0) {
                         tipsText.visibility = View.VISIBLE
                     } else {
                         tipsText.visibility = View.GONE
                     }
-                    comments.addAll(tucaoData.comments)
+                    comments.addAll(data.comments)
                     adapter.notifyDataSetChanged()
                 }
             }
 
-            override fun onLoadFailed(error: String?) {
+            override fun onFailure(t: Throwable?) {
                 refreshLayout.isRefreshing = false
-                Toasty.error(this@TucaoActivity, error!!, Toast.LENGTH_SHORT).show()
+                Toasty.error(this@TucaoActivity, t?.message.toString(), Toast.LENGTH_SHORT).show()
             }
         })
 
         refreshLayout.setOnRefreshListener {
             comments.clear()
-            dataManager.loadTucao(id)
+            dataManager.loadData(createCall(id))
         }
 
         adapter = TucaoAdapter(this, comments)
         recyclerView.adapter = adapter
-
-        refreshLayout.isRefreshing = true
-        dataManager.loadTucao(id)
     }
 
 }

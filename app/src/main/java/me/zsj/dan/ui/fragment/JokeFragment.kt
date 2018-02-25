@@ -7,7 +7,9 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import me.zsj.dan.R
-import me.zsj.dan.data.DataCallbackAdapter
+import me.zsj.dan.data.Callback
+import me.zsj.dan.data.ICall
+import me.zsj.dan.data.api.DataApi
 import me.zsj.dan.model.Comment
 import me.zsj.dan.model.Joke
 import me.zsj.dan.ui.adapter.JokeAdapter
@@ -15,11 +17,12 @@ import me.zsj.dan.ui.adapter.common.OnLoadDataListener
 import me.zsj.dan.utils.NoItemAnimator
 import me.zsj.dan.utils.getColor
 import me.zsj.dan.utils.recyclerview.RecyclerViewExtensions
+import retrofit2.Call
 
 /**
  * @author zsj
  */
-class JokeFragment : LazyLoadFragment(), RecyclerViewExtensions, OnLoadDataListener {
+class JokeFragment : LazyLoadFragment(), ICall<Joke>, RecyclerViewExtensions, OnLoadDataListener {
 
     private var refreshLayout: SwipeRefreshLayout? = null
     private var recyclerView: RecyclerView? = null
@@ -29,6 +32,7 @@ class JokeFragment : LazyLoadFragment(), RecyclerViewExtensions, OnLoadDataListe
     private var jokeList: ArrayList<Comment> = ArrayList()
     private var page: Int = 1
     private var clear: Boolean = false
+    private var call: Call<Joke>? = null
 
     override fun initViews(inflater: LayoutInflater?, container: ViewGroup?, savedInstanceState: Bundle?): View {
         val view = inflater!!.inflate(R.layout.fragment_joke, container, false)
@@ -37,37 +41,41 @@ class JokeFragment : LazyLoadFragment(), RecyclerViewExtensions, OnLoadDataListe
         return view
     }
 
+    override fun createCall(arg: Any?): Call<Joke> {
+        return dataManager.createApi(DataApi::class.java)!!.loadJokes(arg as Int)
+    }
+
     override fun initData() {
         refreshLayout?.setColorSchemeColors(getColor(R.color.colorAccent))
 
         setupRecyclerView()
 
-        dataManager.registerDataCallback(object : DataCallbackAdapter() {
-            override fun onLoadJokes(joke: Joke?) {
-                onDataLoaded(joke)
+        dataManager.setCallback(object : Callback {
+            override fun onSuccess(data: Any?) {
+                onDataLoaded(data as Joke)
             }
 
-            override fun onLoadFailed(error: String?) {
-                onLoadDataFailed(error)
+            override fun onFailure(t: Throwable?) {
+                onLoadDataFailed(t?.message)
             }
         })
 
         refreshLayout?.setOnRefreshListener {
             page = 1
             clear = true
-            dataManager.loadJokes(page)
+            dataManager.loadData(createCall(page))
         }
 
         recyclerView?.postDelayed({
             refreshLayout?.isRefreshing = true
-            dataManager.loadJokes(page)
+            dataManager.loadData(createCall(page))
         }, 350)
     }
 
     private fun setupRecyclerView() {
         adapter = JokeAdapter(activity, jokeList, dataManager)
         adapter.setOnLoadDataListener(this)
-        recyclerView?.itemAnimator = NoItemAnimator()
+        recyclerView?.itemAnimator?.changeDuration = 0
         recyclerView?.adapter = adapter
 
         recyclerView?.onLoadMore {
@@ -81,7 +89,7 @@ class JokeFragment : LazyLoadFragment(), RecyclerViewExtensions, OnLoadDataListe
             clear = false
             isLoadMore = true
             recyclerView?.postDelayed({
-                dataManager.loadJokes(page)
+                dataManager.loadData(createCall(page))
             }, 1000)
         }
     }

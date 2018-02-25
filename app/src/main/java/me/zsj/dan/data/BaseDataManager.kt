@@ -28,8 +28,8 @@ open class BaseDataManager(context: Activity) {
 
     private val cacheSize: Long = 10 * 1024 * 1024 // 10Mb
     private var client: OkHttpClient? = null
-    private var dataApi: DataApi? = null
     private lateinit var gson: Gson
+    var retrofit: Retrofit? = null
 
     //TODO；缓存优化
     private val CACHE_CONTROL_INTERCEPTOR: Interceptor = Interceptor { chain ->
@@ -74,22 +74,13 @@ open class BaseDataManager(context: Activity) {
                     .build()
             gson = GsonBuilder().setDateFormat("yyyy-MM-dd HH:mm:ss")
                     .serializeNulls().create()
+
+            retrofit = Retrofit.Builder()
+                    .baseUrl(HOST)
+                    .addConverterFactory(GsonConverterFactory.create(gson))
+                    .client(client)
+                    .build()
         }
-    }
-
-    fun getDataApi() : DataApi {
-        if (dataApi == null) return createDataApi()
-        return dataApi!!
-    }
-
-    fun createDataApi() : DataApi {
-        val retrofit = Retrofit.Builder()
-                .baseUrl(HOST)
-                .addConverterFactory(GsonConverterFactory.create(gson))
-                .client(client)
-                .build()
-        dataApi = retrofit.create(DataApi::class.java) as DataApi
-        return dataApi!!
     }
 
     fun buildRequest(votePositive: Boolean, id: String) : Request {
@@ -104,11 +95,10 @@ open class BaseDataManager(context: Activity) {
                     .build()
         }
         val url = if (votePositive) VOTE_POSITIVE_URL else VOTE_NEGATIVE_URL
-        val request = Request.Builder()
+        return Request.Builder()
                 .url(url)
                 .post(requestBody)
                 .build()
-        return request
     }
 
     fun getClient() : OkHttpClient {

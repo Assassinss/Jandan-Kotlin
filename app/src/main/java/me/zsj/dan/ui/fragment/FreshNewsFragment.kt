@@ -8,7 +8,9 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import me.zsj.dan.R
-import me.zsj.dan.data.DataCallbackAdapter
+import me.zsj.dan.data.Callback
+import me.zsj.dan.data.ICall
+import me.zsj.dan.data.api.DataApi
 import me.zsj.dan.model.FreshNew
 import me.zsj.dan.model.Post
 import me.zsj.dan.ui.adapter.FreshNewsAdapter
@@ -16,11 +18,12 @@ import me.zsj.dan.ui.adapter.common.OnLoadDataListener
 import me.zsj.dan.utils.ItemDivider
 import me.zsj.dan.utils.getColor
 import me.zsj.dan.utils.recyclerview.RecyclerViewExtensions
+import retrofit2.Call
 
 /**
  * @author zsj
  */
-class FreshNewsFragment : LazyLoadFragment(), RecyclerViewExtensions, OnLoadDataListener {
+class FreshNewsFragment : LazyLoadFragment(), ICall<FreshNew>, RecyclerViewExtensions, OnLoadDataListener {
 
     private val TAG = "FreshNewsFragment"
 
@@ -32,23 +35,28 @@ class FreshNewsFragment : LazyLoadFragment(), RecyclerViewExtensions, OnLoadData
     private var page: Int = 1
     private var clear: Boolean = false
 
-    override fun initViews(inflater: LayoutInflater?, container: ViewGroup?, savedInstanceState: Bundle?): View {
+    override fun initViews(inflater: LayoutInflater?,
+                           container: ViewGroup?, savedInstanceState: Bundle?): View {
         val view = inflater!!.inflate(R.layout.fragment_fresh_news, container, false)
         refreshLayout = view.findViewById(R.id.swipe_refresh_layout)
         newsList = view.findViewById(R.id.news_list)
         return view
     }
 
+    override fun createCall(arg: Any?): Call<FreshNew> {
+        return dataManager.createApi(DataApi::class.java)!!.loadFreshNews(arg as Int)
+    }
+
     override fun initData() {
         refreshLayout?.setColorSchemeColors(getColor(R.color.colorAccent))
 
-        dataManager.registerDataCallback(object : DataCallbackAdapter() {
-            override fun onLoadFreshNews(freshNew: FreshNew?) {
-                onLoadData(freshNew)
+        dataManager.setCallback(object : Callback {
+            override fun onSuccess(data: Any?) {
+                onLoadData(data as FreshNew)
             }
 
-            override fun onLoadFailed(error: String?) {
-                onLoadDataFailed(error)
+            override fun onFailure(t: Throwable?) {
+                onLoadDataFailed(t?.message)
             }
         })
 
@@ -57,12 +65,12 @@ class FreshNewsFragment : LazyLoadFragment(), RecyclerViewExtensions, OnLoadData
         refreshLayout?.setOnRefreshListener {
             page = 1
             clear = true
-            dataManager.loadFreshNews(page)
+            dataManager.loadData(createCall(page))
         }
 
         newsList?.postDelayed({
             refreshLayout?.isRefreshing = true
-            dataManager.loadFreshNews(page)
+            dataManager.loadData(createCall(page))
         }, 350)
     }
 
@@ -86,7 +94,7 @@ class FreshNewsFragment : LazyLoadFragment(), RecyclerViewExtensions, OnLoadData
             page += 1
             clear = false
             newsList?.postDelayed({
-                dataManager.loadFreshNews(page)
+                dataManager.loadData(createCall(page))
             }, 500)
         }
     }

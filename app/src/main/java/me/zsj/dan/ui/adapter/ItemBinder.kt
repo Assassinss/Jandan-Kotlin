@@ -49,7 +49,7 @@ open class ItemBinder(var dataManager: DataManager) {
         holder.more.setOnClickListener { showActionMenu(holder, comment, it) }
     }
 
-    fun showActionMenu(holder: Holder, comment: Comment, view: View) {
+    private fun showActionMenu(holder: Holder, comment: Comment, view: View) {
         val actionMenu = PopupMenu(holder.more.context, view, Gravity.END)
         actionMenu.inflate(R.menu.menu_more)
         actionMenu.setOnMenuItemClickListener { item->
@@ -63,20 +63,20 @@ open class ItemBinder(var dataManager: DataManager) {
         actionMenu.show()
     }
 
-    fun shareTextContent(context: Context, comment: Comment) {
+    private fun shareTextContent(context: Context, comment: Comment) {
         val intent = Intent(Intent.ACTION_SEND)
         intent.putExtra(Intent.EXTRA_TEXT, comment.textContent)
         intent.type = "text/plain"
         context.startActivity(intent)
     }
 
-    fun copyText(context: Context, comment: Comment) {
+    private fun copyText(context: Context, comment: Comment) {
         val cbm = context.getSystemService(Context.CLIPBOARD_SERVICE) as ClipboardManager
         cbm.text = comment.textContent
         Toasty.success(context, context.getStr(R.string.copy_to_clipboard), Toast.LENGTH_LONG).show()
     }
 
-    fun voteOO(holder: Holder, ID: String) {
+    private fun voteOO(holder: Holder, ID: String) {
         dataManager.getClient().newCall(
                 dataManager.buildRequest(BaseDataManager.VOTE_POSITIVE, ID))
                 .enqueue(object : Callback {
@@ -93,7 +93,7 @@ open class ItemBinder(var dataManager: DataManager) {
                 })
     }
 
-    fun voteXX(holder: Holder, ID: String) {
+    private fun voteXX(holder: Holder, ID: String) {
         dataManager.getClient().newCall(
                 dataManager.buildRequest(BaseDataManager.VOTE_NEGATIVE, ID))
                 .enqueue(object : Callback {
@@ -135,7 +135,7 @@ open class ItemBinder(var dataManager: DataManager) {
     }
 
     fun updateVotePositive(context: Context, holder: Holder, result: String?) {
-        val comment = dataManager.getCommnets()[holder.adapterPosition]
+        val comment = dataManager.getComments()[holder.adapterPosition]
         val count = result!!.last()
         if (count == '1') {
             comment.voted = true
@@ -148,7 +148,7 @@ open class ItemBinder(var dataManager: DataManager) {
     }
 
     fun updateVoteNegative(context: Context, holder: Holder, result: String?) {
-        val comment = dataManager.getCommnets()[holder.adapterPosition]
+        val comment = dataManager.getComments()[holder.adapterPosition]
         val count = result!!.last()
         if (count == '1') {
             comment.negative = true

@@ -9,25 +9,26 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import me.zsj.dan.R
-import me.zsj.dan.data.DataCallbackAdapter
+import me.zsj.dan.data.Callback
+import me.zsj.dan.data.ICall
+import me.zsj.dan.data.api.DataApi
 import me.zsj.dan.model.Comment
 import me.zsj.dan.model.Picture
 import me.zsj.dan.ui.adapter.PictureAdapter
 import me.zsj.dan.ui.adapter.common.OnLoadDataListener
-import me.zsj.dan.utils.NoItemAnimator
 import me.zsj.dan.utils.getColor
 import me.zsj.dan.visibility.calculator.ListItemsVisibilityCalculator
 import me.zsj.dan.visibility.calculator.SingleListViewItemActiveCalculator
 import me.zsj.dan.visibility.scroll_utils.ItemsPositionGetter
 import me.zsj.dan.visibility.scroll_utils.RecyclerViewItemPositionGetter
+import retrofit2.Call
 
 /**
  * @author zsj
  */
-open class PictureFragment : LazyLoadFragment(), OnLoadDataListener {
+open class PictureFragment : LazyLoadFragment(), ICall<Picture>, OnLoadDataListener {
 
     private val TAG = "PictureFragment"
-    private val GIF_TAG = ".gif"
     private val BORING_CATEGORY = "boring"
     private val MEIZI_CATEGORY = "meizi"
 
@@ -53,6 +54,14 @@ open class PictureFragment : LazyLoadFragment(), OnLoadDataListener {
         return view
     }
 
+    override fun createCall(arg: Any?): Call<Picture> {
+        return if (category == BORING_CATEGORY) {
+            dataManager.createApi(DataApi::class.java)!!.loadBoringPics(arg as Int)
+        } else {
+            dataManager.createApi(DataApi::class.java)!!.loadOOXXPics(arg as Int)
+        }
+    }
+
     override fun initVariables(bundle: Bundle?) {
         category = bundle?.getString("picture")
         Log.d(TAG, "category: " + category)
@@ -66,30 +75,22 @@ open class PictureFragment : LazyLoadFragment(), OnLoadDataListener {
         refreshLayout?.setOnRefreshListener {
             clear = true
             page = 1
-            if (category.equals(BORING_CATEGORY)) {
-                dataManager.loadBoringPics(page)
-            } else if (category.equals(MEIZI_CATEGORY)) {
-                dataManager.loadOOXXPics(page)
-            }
+            dataManager.loadData(createCall(page))
         }
 
-        dataManager.registerDataCallback(object : DataCallbackAdapter() {
-            override fun onLoadBoringPics(picture: Picture?) {
-                onDataLoaded(picture)
+        dataManager.setCallback(object : Callback {
+            override fun onSuccess(data: Any?) {
+                onDataLoaded(data as Picture)
             }
 
-            override fun onLoadFailed(error: String?) {
-                onLoadDataFailed(error)
+            override fun onFailure(t: Throwable?) {
+                onLoadDataFailed(t?.message)
             }
         })
 
         picsList?.postDelayed({
             refreshLayout?.isRefreshing = true
-            if (category.equals(BORING_CATEGORY)) {
-                dataManager.loadBoringPics(page)
-            } else if (category.equals(MEIZI_CATEGORY)) {
-                dataManager.loadOOXXPics(page)
-            }
+            dataManager.loadData(createCall(page))
         }, 350)
     }
 
@@ -97,7 +98,7 @@ open class PictureFragment : LazyLoadFragment(), OnLoadDataListener {
         adapter = PictureAdapter(activity, items, dataManager)
         adapter.setOnLoadDataListener(this)
         adapter.setRecyclerView(picsList!!)
-        picsList?.itemAnimator = NoItemAnimator()
+        picsList?.itemAnimator?.changeDuration = 0
         picsList?.layoutManager = this.layoutManager
         picsList?.adapter = adapter
 
@@ -138,11 +139,7 @@ open class PictureFragment : LazyLoadFragment(), OnLoadDataListener {
             page += 1
             isLoadMore = true
             picsList?.postDelayed({
-                if (category.equals(BORING_CATEGORY)) {
-                    dataManager.loadBoringPics(page)
-                } else if (category.equals(MEIZI_CATEGORY)) {
-                    dataManager.loadOOXXPics(page)
-                }
+                dataManager.loadData(createCall(page))
             }, 1000)
         }
     }

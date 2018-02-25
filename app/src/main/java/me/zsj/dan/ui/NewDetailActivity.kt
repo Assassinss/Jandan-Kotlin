@@ -15,14 +15,16 @@ import com.bumptech.glide.request.target.SizeReadyCallback
 import com.bumptech.glide.request.target.Target
 import kotterknife.bindView
 import me.zsj.dan.R
-import me.zsj.dan.data.DataCallbackAdapter
+import me.zsj.dan.data.Callback
 import me.zsj.dan.data.DataManager
+import me.zsj.dan.data.api.DataApi
 import me.zsj.dan.glide.ProgressTarget
 import me.zsj.dan.model.NewDetail
 import me.zsj.dan.model.Post
 import me.zsj.dan.utils.DateUtils
 import me.zsj.dan.utils.PreferenceManager
 import pl.droidsonroids.gif.GifDrawable
+import retrofit2.Call
 import java.io.BufferedInputStream
 import java.io.File
 import java.io.FileInputStream
@@ -49,26 +51,30 @@ class NewDetailActivity : AppCompatActivity(), View.OnClickListener {
     private val actionShare: ImageView by bindView(R.id.action_share)
 
     private lateinit var dataManager: DataManager
+    private var call: Call<NewDetail>? = null
     private var post: Post? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_new_detail)
 
+        post = intent.getParcelableExtra(POST)
+
         dataManager = DataManager(this)
-        dataManager.registerDataCallback(object : DataCallbackAdapter() {
-            override fun onLoadNewDetail(newDetail: NewDetail?) {
+
+        call = dataManager.createApi(DataApi::class.java)?.getNewDetail(post!!.id)
+
+        dataManager.setCallback(object : Callback {
+            override fun onSuccess(data: Any?) {
                 loadingProgress.visibility = View.GONE
-                onDataLoaded(newDetail)
+                onDataLoaded(data as NewDetail)
             }
 
-            override fun onLoadFailed(error: String?) {
+            override fun onFailure(t: Throwable?) {
                 loadingProgress.visibility = View.GONE
-                onLoadDataFailed(error)
+                onLoadDataFailed(t?.message)
             }
         })
-
-        post = intent.getParcelableExtra(POST)
 
         setupUI()
 
@@ -138,7 +144,7 @@ class NewDetailActivity : AppCompatActivity(), View.OnClickListener {
 
     private fun loadNewDetail() {
         loadingProgress.visibility = View.VISIBLE
-        dataManager.loadNewDetail(post!!.id)
+        dataManager.loadData(call)
     }
 
     private fun createHtml(content: String?) : String {

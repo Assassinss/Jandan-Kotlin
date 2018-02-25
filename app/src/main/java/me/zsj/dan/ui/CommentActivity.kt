@@ -15,15 +15,18 @@ import me.drakeet.multitype.MultiTypeAdapter
 import me.zsj.dan.R
 import me.zsj.dan.binder.CommentBinder
 import me.zsj.dan.binder.CommentCategoryBinder
-import me.zsj.dan.data.DataCallbackAdapter
+import me.zsj.dan.data.Callback
 import me.zsj.dan.data.DataManager
+import me.zsj.dan.data.ICall
+import me.zsj.dan.data.api.DataApi
 import me.zsj.dan.model.NewDetail
 import me.zsj.dan.model.PostComment
+import retrofit2.Call
 
 /**
  * @author zsj
  */
-class CommentActivity : AppCompatActivity() {
+class CommentActivity : AppCompatActivity(), ICall<NewDetail> {
 
     companion object {
         val ID = "id"
@@ -38,6 +41,11 @@ class CommentActivity : AppCompatActivity() {
     private lateinit var dataManager: DataManager
     private var items: Items = Items()
 
+
+    override fun createCall(arg: Any?): Call<NewDetail> {
+        return dataManager.createApi(DataApi::class.java)!!.getComments(arg as String)
+    }
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_comments)
@@ -50,19 +58,21 @@ class CommentActivity : AppCompatActivity() {
 
         dataManager = DataManager(this)
 
-        dataManager.registerDataCallback(object : DataCallbackAdapter() {
-            override fun onLoadNewDetail(newDetail: NewDetail?) {
-                onDataLoaded(newDetail)
+        dataManager.loadData(createCall(id))
+
+        dataManager.setCallback(object : Callback {
+            override fun onSuccess(data: Any?) {
+                onDataLoaded(data as NewDetail)
             }
 
-            override fun onLoadFailed(error: String?) {
-                this@CommentActivity.onLoadFailed(error)
+            override fun onFailure(t: Throwable?) {
+                onLoadFailed(t?.message)
             }
         })
 
         refreshLayout.setOnRefreshListener {
             items.clear()
-            dataManager.loadComments(id)
+            dataManager.loadData(createCall(id))
         }
 
         adapter = MultiTypeAdapter(items)
@@ -72,7 +82,6 @@ class CommentActivity : AppCompatActivity() {
         recyclerView.adapter = adapter
 
         refreshLayout.isRefreshing = true
-        dataManager.loadComments(id)
     }
 
     private fun onDataLoaded(newDetail: NewDetail?) {
