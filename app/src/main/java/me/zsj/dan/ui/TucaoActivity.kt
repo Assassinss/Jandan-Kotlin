@@ -22,7 +22,7 @@ import retrofit2.Call
 /**
  * @author zsj
  */
-class TucaoActivity : AppCompatActivity(), ICall<TucaoData> {
+class TucaoActivity : AppCompatActivity(), ICall<TucaoData>, Callback {
 
     companion object {
         val ID = "id"
@@ -54,31 +54,12 @@ class TucaoActivity : AppCompatActivity(), ICall<TucaoData> {
 
         val id = intent.getStringExtra(ID)
 
-        dataManager = DataManager(this)
+        dataManager = DataManager.get(this)
 
         refreshLayout.isRefreshing = true
         dataManager.loadData(createCall(id))
 
-        dataManager.setCallback(object : Callback {
-            override fun onSuccess(data: Any?) {
-                refreshLayout.isRefreshing = false
-                data as TucaoData
-                if (data.comments != null) {
-                    if (data.comments.size == 0) {
-                        tipsText.visibility = View.VISIBLE
-                    } else {
-                        tipsText.visibility = View.GONE
-                    }
-                    comments.addAll(data.comments)
-                    adapter.notifyDataSetChanged()
-                }
-            }
-
-            override fun onFailure(t: Throwable?) {
-                refreshLayout.isRefreshing = false
-                Toasty.error(this@TucaoActivity, t?.message.toString(), Toast.LENGTH_SHORT).show()
-            }
-        })
+        dataManager.setCallback(this)
 
         refreshLayout.setOnRefreshListener {
             comments.clear()
@@ -89,4 +70,22 @@ class TucaoActivity : AppCompatActivity(), ICall<TucaoData> {
         recyclerView.adapter = adapter
     }
 
+    override fun onSuccess(data: Any?) {
+        data as TucaoData
+        refreshLayout.isRefreshing = false
+        if (data.comments != null) {
+            if (data.comments.size == 0) {
+                tipsText.visibility = View.VISIBLE
+            } else {
+                tipsText.visibility = View.GONE
+            }
+            comments.addAll(data.comments)
+            adapter.notifyDataSetChanged()
+        }
+    }
+
+    override fun onFailure(t: Throwable?) {
+        refreshLayout.isRefreshing = false
+        Toasty.error(this@TucaoActivity, t?.message.toString(), Toast.LENGTH_SHORT).show()
+    }
 }

@@ -1,9 +1,8 @@
 package me.zsj.dan.data
 
-import android.app.Activity
+import android.content.Context
 import com.google.gson.Gson
 import com.google.gson.GsonBuilder
-import me.zsj.dan.data.api.DataApi
 import me.zsj.pretty_girl_kotlin.utils.NetUtils
 import okhttp3.*
 import okhttp3.logging.HttpLoggingInterceptor
@@ -14,7 +13,7 @@ import java.util.concurrent.TimeUnit
 /**
  * @author zsj
  */
-open class BaseDataManager(context: Activity) {
+open class BaseDataManager(context: Context) {
 
     private val TAG = "BaseDataManager"
     private val HOST = "http://i.jandan.net"

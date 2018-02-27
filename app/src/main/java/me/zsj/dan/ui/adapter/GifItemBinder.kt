@@ -7,8 +7,7 @@ import com.bumptech.glide.Glide
 import com.bumptech.glide.request.animation.GlideAnimation
 import com.bumptech.glide.request.target.SimpleTarget
 import me.zsj.dan.data.DataManager
-import me.zsj.dan.data.executor.DownloadExecutors
-import me.zsj.dan.data.executor.GifCallback
+import me.zsj.dan.data.DownloadExecutors
 import me.zsj.dan.model.Comment
 import me.zsj.dan.utils.StringUtils
 import pl.droidsonroids.gif.GifDrawable
@@ -42,25 +41,18 @@ class GifItemBinder(dataManager: DataManager) : ItemBinder(dataManager) {
                 })
 
         holder.playGif.setOnClickListener {
-            DownloadExecutors.getExecutors()
-                    .registerCallback(object : GifCallback {
-                        override fun onLoadingStart() {
-                            holder.playGif.visibility = View.GONE
-                            holder.loadingProgress.visibility = View.VISIBLE
-                        }
-
-                        override fun onLoadFinished(gifDrawable: GifDrawable) {
-                            holder.playGif.visibility = View.GONE
-                            holder.loadingProgress.visibility = View.GONE
-                            holder.gifImage.setImageDrawable(gifDrawable)
-                        }
-
-                        override fun onLoadFailed() {
-                            holder.playGif.visibility = View.VISIBLE
-                            holder.loadingProgress.visibility = View.GONE
-                        }
+            DownloadExecutors.get()
+                    .downloadGif(context, item.pics[0], { //start download
+                        holder.playGif.visibility = View.GONE
+                        holder.loadingProgress.visibility = View.VISIBLE
+                    }, { // download finish
+                        holder.playGif.visibility = View.GONE
+                        holder.loadingProgress.visibility = View.GONE
+                        holder.gifImage.setImageDrawable(it)
+                    }, { //download failed
+                        holder.playGif.visibility = View.VISIBLE
+                        holder.loadingProgress.visibility = View.GONE
                     })
-                    .downloadGif(context, item.pics[0])
         }
 
         holder.gifImage.setOnClickListener {

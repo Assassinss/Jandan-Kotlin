@@ -1,6 +1,6 @@
 package me.zsj.dan.data
 
-import android.app.Activity
+import android.content.Context
 import me.zsj.dan.model.Comment
 import retrofit2.Call
 import retrofit2.Callback
@@ -10,19 +10,26 @@ import java.util.concurrent.atomic.AtomicInteger
 /**
  * @author zsj
  */
-class DataManager(context: Activity) : BaseDataManager(context) {
+class DataManager private constructor(context: Context) : BaseDataManager(context) {
 
     private val TAG = "DataManager"
     private var loadingCount: AtomicInteger = AtomicInteger(0)
     private var callback: me.zsj.dan.data.Callback? = null
     private var apis: HashMap<Class<out Any>, Any> = HashMap()
 
+    companion object {
+        @Volatile private var instance: DataManager? = null
+
+        fun get(context: Context): DataManager = instance ?: build(context).also { instance = it }
+
+        private fun build(context: Context): DataManager = DataManager(context)
+    }
 
     fun setCallback(callback: me.zsj.dan.data.Callback) {
         this.callback = callback
     }
 
-    fun isLoading() : Boolean {
+    fun isLoading(): Boolean {
         return loadingCount.get() > 0
     }
 
@@ -35,7 +42,7 @@ class DataManager(context: Activity) : BaseDataManager(context) {
         return apis[clazz] as T
     }
 
-    fun <T> loadData(call: Call<T>?) : DataManager? {
+    fun <T> loadData(call: Call<T>?): DataManager? {
         dispatchLoadingStart()
         call?.enqueue(object : Callback<T> {
             override fun onResponse(call: Call<T>?, response: Response<T>?) {
@@ -56,7 +63,7 @@ class DataManager(context: Activity) : BaseDataManager(context) {
 
     private var comments: ArrayList<Comment>? = null
 
-    fun getComments() : ArrayList<Comment> {
+    fun getComments(): ArrayList<Comment> {
         return comments!!
     }
 

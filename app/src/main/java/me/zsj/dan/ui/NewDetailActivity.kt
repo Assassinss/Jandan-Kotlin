@@ -17,6 +17,7 @@ import kotterknife.bindView
 import me.zsj.dan.R
 import me.zsj.dan.data.Callback
 import me.zsj.dan.data.DataManager
+import me.zsj.dan.data.ICall
 import me.zsj.dan.data.api.DataApi
 import me.zsj.dan.glide.ProgressTarget
 import me.zsj.dan.model.NewDetail
@@ -32,7 +33,7 @@ import java.io.FileInputStream
 /**
  * @author zsj
  */
-class NewDetailActivity : AppCompatActivity(), View.OnClickListener {
+class NewDetailActivity : AppCompatActivity(), View.OnClickListener, ICall<NewDetail>, Callback {
 
     companion object {
         val POST = "post"
@@ -51,8 +52,12 @@ class NewDetailActivity : AppCompatActivity(), View.OnClickListener {
     private val actionShare: ImageView by bindView(R.id.action_share)
 
     private lateinit var dataManager: DataManager
-    private var call: Call<NewDetail>? = null
     private var post: Post? = null
+
+    override fun createCall(arg: Any?): Call<NewDetail> {
+        arg as Post
+        return dataManager.createApi(DataApi::class.java)!!.getNewDetail(arg.id)
+    }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -60,21 +65,9 @@ class NewDetailActivity : AppCompatActivity(), View.OnClickListener {
 
         post = intent.getParcelableExtra(POST)
 
-        dataManager = DataManager(this)
+        dataManager = DataManager.get(this)
 
-        call = dataManager.createApi(DataApi::class.java)?.getNewDetail(post!!.id)
-
-        dataManager.setCallback(object : Callback {
-            override fun onSuccess(data: Any?) {
-                loadingProgress.visibility = View.GONE
-                onDataLoaded(data as NewDetail)
-            }
-
-            override fun onFailure(t: Throwable?) {
-                loadingProgress.visibility = View.GONE
-                onLoadDataFailed(t?.message)
-            }
-        })
+        dataManager.setCallback(this)
 
         setupUI()
 
@@ -144,7 +137,7 @@ class NewDetailActivity : AppCompatActivity(), View.OnClickListener {
 
     private fun loadNewDetail() {
         loadingProgress.visibility = View.VISIBLE
-        dataManager.loadData(call)
+        dataManager.loadData(createCall(post))
     }
 
     private fun createHtml(content: String?) : String {
@@ -186,15 +179,18 @@ class NewDetailActivity : AppCompatActivity(), View.OnClickListener {
         </html>"""
     }
 
-    private fun onDataLoaded(newDetail: NewDetail?) {
+    override fun onSuccess(data: Any?) {
+        val newDetail = data as NewDetail
+        loadingProgress.visibility = View.GONE
         val webSettings = webView.settings
         webSettings.javaScriptEnabled = true
         webSettings.setAppCacheEnabled(true)
         webView.addJavascriptInterface(ImageInterface(), "image")
-        webView.loadData(createHtml(newDetail?.post?.content), "text/html; charset=utf-8", "UTF-8")
+        webView.loadData(createHtml(newDetail.post.content), "text/html; charset=utf-8", "UTF-8")
     }
 
-    private fun onLoadDataFailed(error: String?) {
+    override fun onFailure(t: Throwable?) {
+        loadingProgress.visibility = View.GONE
         errorText.visibility = View.VISIBLE
         errorText.text = getString(R.string.connect_error)
         loadingProgress.visibility = View.GONE

@@ -18,8 +18,7 @@ import android.widget.ImageView
 import android.widget.TextView
 import kotterknife.bindView
 import me.zsj.dan.R
-import me.zsj.dan.data.executor.DownloadCallback
-import me.zsj.dan.data.executor.DownloadExecutors
+import me.zsj.dan.data.DownloadExecutors
 import me.zsj.dan.utils.FileUtils
 import me.zsj.dan.utils.StringUtils
 import me.zsj.dan.utils.shortToast
@@ -117,16 +116,12 @@ class ImageActivity : AppCompatActivity(), View.OnClickListener {
     }
 
     private fun saveImage(to: File, picUrl: String) {
-        DownloadExecutors.INSTANCE
-                .registerDownloadCallback(object : DownloadCallback {
-                    override fun onDownloadFile(from: File) {
-                        val file = FileUtils.copy(from, to)
-                        if (file != null) {
-                            notifyScanFile(file)
-                        }
-                    }
-                })
-                .downloadImage(this, picUrl)
+        DownloadExecutors.get().downloadImage(this, picUrl) {
+            val file = FileUtils.copy(it, to)
+            if (file != null) {
+                notifyScanFile(file)
+            }
+        }
     }
 
     private fun notifyScanFile(file: File) {

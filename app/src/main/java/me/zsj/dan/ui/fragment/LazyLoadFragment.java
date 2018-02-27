@@ -48,7 +48,7 @@ public abstract class LazyLoadFragment extends Fragment  {
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        dataManager = new DataManager(getActivity());
+        dataManager = DataManager.Companion.get(getActivity());
 
         Bundle bundle = getArguments();
         if (bundle != null && bundle.size() > 0) {

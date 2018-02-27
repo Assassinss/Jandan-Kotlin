@@ -14,7 +14,6 @@ import me.zsj.dan.model.Comment
 import me.zsj.dan.model.Joke
 import me.zsj.dan.ui.adapter.JokeAdapter
 import me.zsj.dan.ui.adapter.common.OnLoadDataListener
-import me.zsj.dan.utils.NoItemAnimator
 import me.zsj.dan.utils.getColor
 import me.zsj.dan.utils.recyclerview.RecyclerViewExtensions
 import retrofit2.Call
@@ -22,7 +21,8 @@ import retrofit2.Call
 /**
  * @author zsj
  */
-class JokeFragment : LazyLoadFragment(), ICall<Joke>, RecyclerViewExtensions, OnLoadDataListener {
+class JokeFragment : LazyLoadFragment(), ICall<Joke>, Callback,
+        RecyclerViewExtensions, OnLoadDataListener {
 
     private var refreshLayout: SwipeRefreshLayout? = null
     private var recyclerView: RecyclerView? = null
@@ -32,7 +32,6 @@ class JokeFragment : LazyLoadFragment(), ICall<Joke>, RecyclerViewExtensions, On
     private var jokeList: ArrayList<Comment> = ArrayList()
     private var page: Int = 1
     private var clear: Boolean = false
-    private var call: Call<Joke>? = null
 
     override fun initViews(inflater: LayoutInflater?, container: ViewGroup?, savedInstanceState: Bundle?): View {
         val view = inflater!!.inflate(R.layout.fragment_joke, container, false)
@@ -50,15 +49,7 @@ class JokeFragment : LazyLoadFragment(), ICall<Joke>, RecyclerViewExtensions, On
 
         setupRecyclerView()
 
-        dataManager.setCallback(object : Callback {
-            override fun onSuccess(data: Any?) {
-                onDataLoaded(data as Joke)
-            }
-
-            override fun onFailure(t: Throwable?) {
-                onLoadDataFailed(t?.message)
-            }
-        })
+        dataManager.setCallback(this)
 
         refreshLayout?.setOnRefreshListener {
             page = 1
@@ -96,7 +87,8 @@ class JokeFragment : LazyLoadFragment(), ICall<Joke>, RecyclerViewExtensions, On
 
     private var isLoadMore = false
 
-    private fun onDataLoaded(joke: Joke?) {
+    override fun onSuccess(data: Any?) {
+        val joke = data as Joke
         refreshLayout?.isRefreshing = false
         if (clear) {
             jokeList.clear()
@@ -105,14 +97,12 @@ class JokeFragment : LazyLoadFragment(), ICall<Joke>, RecyclerViewExtensions, On
         adapter.onLoadingError(false)
         isLoadMore = false
 
-        if (joke?.comments != null) {
-            jokeList.addAll(joke.comments)
-            dataManager.setComments(jokeList)
-            adapter.notifyItemRangeChanged(jokeList.size - joke.comments.size - 1, jokeList.size)
-        }
+        jokeList.addAll(joke.comments)
+        dataManager.setComments(jokeList)
+        adapter.notifyItemRangeChanged(jokeList.size - joke.comments.size - 1, jokeList.size)
     }
 
-    private fun onLoadDataFailed(error: String?) {
+    override fun onFailure(t: Throwable?) {
         isLoadMore = false
         refreshLayout?.isRefreshing = false
         if (page > 1) page -= 1

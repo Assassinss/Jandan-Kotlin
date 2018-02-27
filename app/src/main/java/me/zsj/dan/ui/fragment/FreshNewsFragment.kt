@@ -23,7 +23,8 @@ import retrofit2.Call
 /**
  * @author zsj
  */
-class FreshNewsFragment : LazyLoadFragment(), ICall<FreshNew>, RecyclerViewExtensions, OnLoadDataListener {
+class FreshNewsFragment : LazyLoadFragment(), ICall<FreshNew>, Callback,
+        RecyclerViewExtensions, OnLoadDataListener {
 
     private val TAG = "FreshNewsFragment"
 
@@ -50,15 +51,7 @@ class FreshNewsFragment : LazyLoadFragment(), ICall<FreshNew>, RecyclerViewExten
     override fun initData() {
         refreshLayout?.setColorSchemeColors(getColor(R.color.colorAccent))
 
-        dataManager.setCallback(object : Callback {
-            override fun onSuccess(data: Any?) {
-                onLoadData(data as FreshNew)
-            }
-
-            override fun onFailure(t: Throwable?) {
-                onLoadDataFailed(t?.message)
-            }
-        })
+        dataManager.setCallback(this)
 
         setupRecyclerView()
 
@@ -99,19 +92,20 @@ class FreshNewsFragment : LazyLoadFragment(), ICall<FreshNew>, RecyclerViewExten
         }
     }
 
-    private fun onLoadData(freshNew: FreshNew?) {
+    override fun onSuccess(data: Any?) {
+        val freshNew = data as FreshNew
         if (clear) {
             freshNewsList.clear()
         }
         newsAdapter.onLoadingError(false)
         refreshLayout?.isRefreshing = false
-        if (freshNew?.posts != null) {
+        if (freshNew.posts != null) {
             freshNewsList.addAll(freshNew.posts)
         }
         newsAdapter.notifyDataSetChanged()
     }
 
-    private fun onLoadDataFailed(error: String?) {
+    override fun onFailure(t: Throwable?) {
         refreshLayout?.isRefreshing = false
         if (page > 1) page -= 1
         newsAdapter.onLoadingError(true)

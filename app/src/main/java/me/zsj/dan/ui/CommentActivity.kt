@@ -26,7 +26,7 @@ import retrofit2.Call
 /**
  * @author zsj
  */
-class CommentActivity : AppCompatActivity(), ICall<NewDetail> {
+class CommentActivity : AppCompatActivity(), ICall<NewDetail>, Callback {
 
     companion object {
         val ID = "id"
@@ -56,19 +56,11 @@ class CommentActivity : AppCompatActivity(), ICall<NewDetail> {
 
         val id = intent.getStringExtra(ID)
 
-        dataManager = DataManager(this)
+        dataManager = DataManager.get(this)
 
         dataManager.loadData(createCall(id))
 
-        dataManager.setCallback(object : Callback {
-            override fun onSuccess(data: Any?) {
-                onDataLoaded(data as NewDetail)
-            }
-
-            override fun onFailure(t: Throwable?) {
-                onLoadFailed(t?.message)
-            }
-        })
+        dataManager.setCallback(this)
 
         refreshLayout.setOnRefreshListener {
             items.clear()
@@ -84,9 +76,10 @@ class CommentActivity : AppCompatActivity(), ICall<NewDetail> {
         refreshLayout.isRefreshing = true
     }
 
-    private fun onDataLoaded(newDetail: NewDetail?) {
+    override fun onSuccess(data: Any?) {
+        val newDetail = data as NewDetail
         refreshLayout.isRefreshing = false
-        if (newDetail?.post != null && newDetail.post.comments?.size != 0) {
+        if (newDetail.post.comments?.size != 0) {
             items.add(getString(R.string.category_comment_rank))
             items.add(PostComment(PostComment.COMMENTS_RANK, newDetail.post))
             items.add(getString(R.string.category_comment_normal))
@@ -94,15 +87,15 @@ class CommentActivity : AppCompatActivity(), ICall<NewDetail> {
             adapter.notifyDataSetChanged()
         }
 
-        if (newDetail?.post?.comments?.size == 0) {
+        if (newDetail.post.comments?.size == 0) {
             tipsText.visibility = View.VISIBLE
         } else {
             tipsText.visibility = View.GONE
         }
     }
 
-    private fun onLoadFailed(error: String?) {
+    override fun onFailure(t: Throwable?) {
         refreshLayout.isRefreshing = false
-        Toasty.error(this, error!!, Toast.LENGTH_SHORT).show()
+        Toasty.error(this, t?.message.toString(), Toast.LENGTH_SHORT).show()
     }
 }

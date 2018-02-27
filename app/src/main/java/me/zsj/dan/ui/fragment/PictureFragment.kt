@@ -26,7 +26,7 @@ import retrofit2.Call
 /**
  * @author zsj
  */
-open class PictureFragment : LazyLoadFragment(), ICall<Picture>, OnLoadDataListener {
+open class PictureFragment : LazyLoadFragment(), ICall<Picture>, Callback, OnLoadDataListener {
 
     private val TAG = "PictureFragment"
     private val BORING_CATEGORY = "boring"
@@ -78,15 +78,7 @@ open class PictureFragment : LazyLoadFragment(), ICall<Picture>, OnLoadDataListe
             dataManager.loadData(createCall(page))
         }
 
-        dataManager.setCallback(object : Callback {
-            override fun onSuccess(data: Any?) {
-                onDataLoaded(data as Picture)
-            }
-
-            override fun onFailure(t: Throwable?) {
-                onLoadDataFailed(t?.message)
-            }
-        })
+        dataManager.setCallback(this)
 
         picsList?.postDelayed({
             refreshLayout?.isRefreshing = true
@@ -146,7 +138,9 @@ open class PictureFragment : LazyLoadFragment(), ICall<Picture>, OnLoadDataListe
 
     private var isLoadMore = false
 
-    private fun onDataLoaded(picture: Picture?) {
+    override fun onSuccess(data: Any?) {
+        val picture = data as Picture
+        refreshLayout?.isRefreshing = false
         if (clear) {
             items.clear()
         }
@@ -155,14 +149,13 @@ open class PictureFragment : LazyLoadFragment(), ICall<Picture>, OnLoadDataListe
 
         adapter.onLoadingError(false)
         refreshLayout?.isRefreshing = false
-        if (picture?.comments != null) {
-            items.addAll(picture.comments)
-            dataManager.setComments(items)
-            adapter.notifyItemRangeChanged(items.size - picture.comments.size- 1, items.size)
-        }
+
+        items.addAll(picture.comments)
+        dataManager.setComments(items)
+        adapter.notifyItemRangeChanged(items.size - picture.comments.size- 1, items.size)
     }
 
-    private fun onLoadDataFailed(error: String?) {
+    override fun onFailure(t: Throwable?) {
         refreshLayout?.isRefreshing = false
         isLoadMore = false
         if (page > 1) page -= 1
