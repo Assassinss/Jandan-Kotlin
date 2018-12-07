@@ -52,7 +52,7 @@ class JokeAdapter(var context: Activity, var comments: ArrayList<Comment>,
         notifyItemChanged(comments.size)
     }
 
-    override fun onCreateViewHolder(parent: ViewGroup?, viewType: Int): RecyclerView.ViewHolder? {
+    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RecyclerView.ViewHolder {
         if (viewType == R.layout.item_load_more) {
             val view = LayoutInflater.from(context).inflate(R.layout.item_load_more, parent, false)
             return LoadingHolder(view)
@@ -60,10 +60,10 @@ class JokeAdapter(var context: Activity, var comments: ArrayList<Comment>,
             val view = LayoutInflater.from(context).inflate(R.layout.item_joke, parent, false)
             return JokeHolder(view)
         }
-        return null
+        throw IllegalStateException()
     }
 
-    override fun onBindViewHolder(holder: RecyclerView.ViewHolder?, position: Int) {
+    override fun onBindViewHolder(holder: RecyclerView.ViewHolder, position: Int) {
         if (getItemViewType(position) == R.layout.item_load_more) {
             holder as LoadingHolder
             holder.showLoading(holder, itemCount, error)

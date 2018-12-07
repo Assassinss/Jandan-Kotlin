@@ -10,7 +10,7 @@ import java.util.concurrent.atomic.AtomicInteger
 /**
  * @author zsj
  */
-class DataManager private constructor(context: Context) : BaseDataManager(context) {
+class DataManager constructor(context: Context) : BaseDataManager(context) {
 
     private val TAG = "DataManager"
     private var loadingCount: AtomicInteger = AtomicInteger(0)

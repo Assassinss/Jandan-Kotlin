@@ -41,7 +41,7 @@ class ImageFragment : LazyLoadFragment() {
     }
 
     override fun initData() {
-        val picUrl = arguments.getString("picUrl")
+        val picUrl = arguments?.getString("picUrl")
         loadingProgress?.visibility = View.VISIBLE
         Glide.with(activity)
                 .load(picUrl)
@@ -50,7 +50,7 @@ class ImageFragment : LazyLoadFragment() {
 
                     override fun onResourceReady(resource: File?, animation: GlideAnimation<in File>?) {
                         super.onResourceReady(resource, animation)
-                        setImage(picUrl, resource)
+                        setImage(picUrl!!, resource)
                     }
 
                     override fun getSize(cb: SizeReadyCallback?) {

@@ -61,14 +61,14 @@ class FreshNewsFragment : LazyLoadFragment(), ICall<FreshNew>, Callback,
             dataManager.loadData(createCall(page))
         }
 
+        refreshLayout?.isRefreshing = true
         newsList?.postDelayed({
-            refreshLayout?.isRefreshing = true
             dataManager.loadData(createCall(page))
         }, 350)
     }
 
     private fun setupRecyclerView() {
-        newsAdapter = FreshNewsAdapter(activity, freshNewsList)
+        newsAdapter = FreshNewsAdapter(activity!!, freshNewsList)
         newsAdapter.setOnLoadDataListener(this)
         newsList?.addItemDecoration(ItemDivider(activity, ItemDivider.VERTICAL_LIST))
         newsList?.adapter = newsAdapter

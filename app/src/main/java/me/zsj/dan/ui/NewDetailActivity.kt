@@ -141,9 +141,9 @@ class NewDetailActivity : AppCompatActivity(), View.OnClickListener, ICall<NewDe
     }
 
     private fun createHtml(content: String?) : String {
-        var bodyBackground = ""
-        var textColor = ""
-        var blockquoteBg = ""
+        val bodyBackground: String
+        val textColor: String
+        val blockquoteBg: String
         val isDay = PreferenceManager.getBoolean(this, PreferenceManager.DAY, true)
         if (!isDay) {
             bodyBackground = "#424242"

@@ -25,27 +25,27 @@ class ItemPictureAdapter : RecyclerView.Adapter<ItemPictureAdapter.ItemPictureHo
         this.pics = pics
     }
 
-    override fun onCreateViewHolder(parent: ViewGroup?, viewType: Int): ItemPictureHolder {
-        val view = LayoutInflater.from(parent!!.context).inflate(R.layout.item_picture, parent, false)
+    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ItemPictureHolder {
+        val view = LayoutInflater.from(parent.context).inflate(R.layout.item_picture, parent, false)
         return ItemPictureHolder(view)
     }
 
-    override fun onBindViewHolder(holder: ItemPictureHolder?, position: Int) {
-        val context = holder?.picture?.context
+    override fun onBindViewHolder(holder: ItemPictureHolder, position: Int) {
+        val context = holder.picture.context
         val picUrl = pics[position]
-        holder?.picture?.setOriginalSize(1, 1)
+        holder.picture.setOriginalSize(1, 1)
         if (picUrl.endsWith(GIF_TAG)) {
-            holder?.gifTag?.visibility = View.VISIBLE
+            holder.gifTag.visibility = View.VISIBLE
         } else {
-            holder?.gifTag?.visibility = View.GONE
+            holder.gifTag.visibility = View.GONE
         }
 
         Glide.with(context)
                 .load(picUrl)
                 .asBitmap()
-                .into(holder?.picture)
+                .into(holder.picture)
 
-        holder?.picture?.setOnClickListener {
+        holder.picture.setOnClickListener {
             val intent = Intent(context, ImageActivity::class.java)
             intent.putExtra(ImageActivity.INDEX, position)
             intent.putStringArrayListExtra(ImageActivity.PIC_URLS, pics)

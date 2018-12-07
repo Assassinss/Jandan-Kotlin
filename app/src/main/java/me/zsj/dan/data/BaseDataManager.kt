@@ -19,13 +19,13 @@ open class BaseDataManager(context: Context) {
     private val HOST = "http://i.jandan.net"
 
     companion object {
-        val VOTE_POSITIVE_URL = "http://i.jandan.net/index.php?acv_ajax=true&option=1"
-        val VOTE_NEGATIVE_URL = "http://i.jandan.net/index.php?acv_ajax=true&option=0"
-        val VOTE_POSITIVE = true
-        val VOTE_NEGATIVE = false
+        const val VOTE_POSITIVE_URL = "http://i.jandan.net/index.php?acv_ajax=true&option=1"
+        const val VOTE_NEGATIVE_URL = "http://i.jandan.net/index.php?acv_ajax=true&option=0"
+        const val VOTE_POSITIVE = true
+        const val VOTE_NEGATIVE = false
+        private const val CACHE_SIZE: Long = 10 * 1024 * 1024 //10Mb
     }
 
-    private val cacheSize: Long = 10 * 1024 * 1024 // 10Mb
     private var client: OkHttpClient? = null
     private lateinit var gson: Gson
     var retrofit: Retrofit? = null
@@ -62,12 +62,12 @@ open class BaseDataManager(context: Context) {
     init {
         if (client == null) {
             val loggingInterceptor = HttpLoggingInterceptor()
-            loggingInterceptor.level = HttpLoggingInterceptor.Level.HEADERS
+            loggingInterceptor.level = HttpLoggingInterceptor.Level.BODY
             client = OkHttpClient.Builder()
                     .connectTimeout(15, TimeUnit.SECONDS)
                     .writeTimeout(15, TimeUnit.SECONDS)
                     .readTimeout(15, TimeUnit.SECONDS)
-                    .cache(Cache(context.cacheDir, cacheSize))
+                    .cache(Cache(context.cacheDir, CACHE_SIZE))
                     .addInterceptor(loggingInterceptor)
                     .addInterceptor(CACHE_CONTROL_INTERCEPTOR)
                     .build()

@@ -23,19 +23,19 @@ class CommentAdapter : RecyclerView.Adapter<CommentAdapter.Holder>() {
         this.comments = comments
     }
 
-    override fun onCreateViewHolder(parent: ViewGroup?, viewType: Int): Holder {
-        val view = LayoutInflater.from(parent?.context).inflate(R.layout.item_comment, parent, false)
+    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): Holder {
+        val view = LayoutInflater.from(parent.context).inflate(R.layout.item_comment, parent, false)
         return Holder(view)
     }
 
-    override fun onBindViewHolder(holder: Holder?, position: Int) {
-        val context = holder?.commentContent?.context
+    override fun onBindViewHolder(holder: Holder, position: Int) {
+        val context = holder.commentContent.context
         val item = comments!![position]
-        holder?.voteNegative?.text = context?.getString(R.string.vote_negative_text, item.voteNegative)
-        holder?.votePositive?.text = context?.getString(R.string.vote_positive_text, item.votePositive)
-        holder?.commentName?.text = item.name
-        holder?.commentTime?.text = DateUtils.getRelativeTimeSpanString(item.date)
-        holder?.commentContent?.text = Html.fromHtml(StringUtils.filterHtml(item.content))
+        holder.voteNegative.text = context?.getString(R.string.vote_negative_text, item.voteNegative)
+        holder.votePositive.text = context?.getString(R.string.vote_positive_text, item.votePositive)
+        holder.commentName.text = item.name
+        holder.commentTime.text = DateUtils.getRelativeTimeSpanString(item.date)
+        holder.commentContent.text = Html.fromHtml(StringUtils.filterHtml(item.content))
     }
 
     override fun getItemCount(): Int {

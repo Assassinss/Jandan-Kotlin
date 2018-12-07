@@ -57,14 +57,14 @@ class JokeFragment : LazyLoadFragment(), ICall<Joke>, Callback,
             dataManager.loadData(createCall(page))
         }
 
+        refreshLayout?.isRefreshing = true
         recyclerView?.postDelayed({
-            refreshLayout?.isRefreshing = true
             dataManager.loadData(createCall(page))
         }, 350)
     }
 
     private fun setupRecyclerView() {
-        adapter = JokeAdapter(activity, jokeList, dataManager)
+        adapter = JokeAdapter(activity!!, jokeList, dataManager)
         adapter.setOnLoadDataListener(this)
         recyclerView?.itemAnimator?.changeDuration = 0
         recyclerView?.adapter = adapter

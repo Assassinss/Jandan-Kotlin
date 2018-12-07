@@ -18,7 +18,6 @@ import me.zsj.dan.ui.fragment.FreshNewsFragment
 import me.zsj.dan.ui.fragment.JokeFragment
 import me.zsj.dan.ui.fragment.MeiziFragment
 import me.zsj.dan.utils.PreferenceManager
-import java.lang.Exception
 
 /**
  * @author zsj

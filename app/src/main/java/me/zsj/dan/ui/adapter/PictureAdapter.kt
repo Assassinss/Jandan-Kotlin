@@ -22,7 +22,6 @@ import me.zsj.dan.visibility.scroll_utils.ItemsProvider
 import me.zsj.dan.widget.GifRatioScaleImageView
 import me.zsj.dan.widget.RatioScaleImageView
 import pl.droidsonroids.gif.GifDrawable
-import pl.droidsonroids.gif.GifImageView
 
 /**
  * @author zsj
@@ -95,7 +94,7 @@ class PictureAdapter(var context: Activity, var comments: ArrayList<Comment>,
         notifyItemChanged(comments.size)
     }
 
-    override fun onCreateViewHolder(parent: ViewGroup?, viewType: Int): RecyclerView.ViewHolder? {
+    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RecyclerView.ViewHolder {
         val inflater = LayoutInflater.from(context)
         if (viewType == R.layout.item_load_more) {
             val view = inflater.inflate(R.layout.item_load_more, parent, false)
@@ -110,10 +109,10 @@ class PictureAdapter(var context: Activity, var comments: ArrayList<Comment>,
             val view = inflater.inflate(R.layout.item_multi_pic, parent, false)
             return MultiHolder(view)
         }
-        return null
+        throw IllegalStateException()
     }
 
-    override fun onBindViewHolder(holder: RecyclerView.ViewHolder?, position: Int) {
+    override fun onBindViewHolder(holder: RecyclerView.ViewHolder, position: Int) {
         if (getItemViewType(position) == R.layout.item_load_more) {
             holder as LoadingHolder
             holder.showLoading(holder, itemCount, error)

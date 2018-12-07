@@ -66,13 +66,6 @@ class DownloadExecutors private constructor() {
         return this
     }
 
-    fun shutdown() {
-        Log.d("DownloadExecutors", "task: " + task?.toString())
-        if (task != null) {
-            Glide.clear(task)
-        }
-    }
-
     fun downloadImage(context: Context,
                       url: String,
                       action: (file: File) -> Unit) {
