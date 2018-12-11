@@ -15,6 +15,12 @@ import me.zsj.dan.model.PostComment
  */
 class CommentBinder : ItemViewBinder<PostComment, CommentBinder.CommentHolder>() {
 
+    private var allComments = ArrayList<Comment>()
+
+    fun addComments(comments: ArrayList<Comment>) {
+        allComments.addAll(comments)
+    }
+
     override fun onCreateViewHolder(inflater: LayoutInflater, parent: ViewGroup): CommentHolder {
         val view = inflater.inflate(R.layout.layout_comment_list, parent, false)
         return CommentHolder(view)
@@ -37,7 +43,7 @@ class CommentBinder : ItemViewBinder<PostComment, CommentBinder.CommentHolder>()
         }
 
         fun setComments(comments: ArrayList<Comment>) {
-            adapter.setData(comments)
+            adapter.setData(comments, allComments)
             adapter.notifyDataSetChanged()
         }
     }

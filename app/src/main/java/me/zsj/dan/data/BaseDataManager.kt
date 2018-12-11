@@ -16,11 +16,11 @@ import java.util.concurrent.TimeUnit
 open class BaseDataManager(context: Context) {
 
     private val TAG = "BaseDataManager"
-    private val HOST = "http://i.jandan.net"
+    private val HOST = "https://i.jandan.net"
 
     companion object {
-        const val VOTE_POSITIVE_URL = "http://i.jandan.net/index.php?acv_ajax=true&option=1"
-        const val VOTE_NEGATIVE_URL = "http://i.jandan.net/index.php?acv_ajax=true&option=0"
+        const val VOTE_POSITIVE_URL = "https://i.jandan.net/index.php?acv_ajax=true&option=1"
+        const val VOTE_NEGATIVE_URL = "https://i.jandan.net/index.php?acv_ajax=true&option=0"
         const val VOTE_POSITIVE = true
         const val VOTE_NEGATIVE = false
         private const val CACHE_SIZE: Long = 10 * 1024 * 1024 //10Mb

@@ -1,5 +1,7 @@
 package me.zsj.dan.utils;
 
+import android.text.TextUtils;
+
 /**
  * @author zsj
  */
@@ -17,8 +19,12 @@ public class StringUtils {
     }
 
     public static String filterHtml(String html) {
-        return html.replaceAll("<p>", EMPTY_STR).replaceAll("</p>", EMPTY_STR)
-                .replaceAll(N_TAG, EMPTY_STR);
+        if (!TextUtils.isEmpty(html)) {
+            return html.replaceAll("<p>", EMPTY_STR).replaceAll("</p>", EMPTY_STR)
+                    .replaceAll(N_TAG, EMPTY_STR);
+        } else {
+            return html;
+        }
     }
 
     public static String makeFileName(String picUrl) {

@@ -80,7 +80,7 @@ class JokeAdapter(var context: Activity, var comments: ArrayList<Comment>,
             itemBinder?.setClickListener(holder, comment)
 
             holder.textContent.text = comment.textContent
-            holder.card.setOnClickListener { itemBinder?.startTucaoActivity(context, comment.id) }
+            holder.card.setOnClickListener { itemBinder?.startTucaoActivity(context, comment.commentId) }
         }
     }
 

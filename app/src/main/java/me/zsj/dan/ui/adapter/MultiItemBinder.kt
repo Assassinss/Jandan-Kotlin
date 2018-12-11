@@ -30,6 +30,6 @@ class MultiItemBinder(dataManager: DataManager) : ItemBinder(dataManager) {
         }
 
         setClickListener(holder, item)
-        holder.card.setOnClickListener { startTucaoActivity(context, item.id) }
+        holder.card.setOnClickListener { startTucaoActivity(context, item.commentId) }
     }
 }

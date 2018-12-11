@@ -11,8 +11,9 @@ import java.util.Date;
 
 public class Comment {
 
-    @SerializedName("comment_ID")
     public String id;
+    @SerializedName("comment_ID")
+    public String commentId;
     @SerializedName("comment_post_ID")
     public String postId;
     @SerializedName("comment_author")
@@ -39,4 +40,27 @@ public class Comment {
     public ArrayList<String> pics;
     public boolean voted = false;
     public boolean negative = false;
+
+    @Override
+    public String toString() {
+        return "Comment{" +
+                "id='" + id + '\'' +
+                ", postId='" + postId + '\'' +
+                ", author='" + author + '\'' +
+                ", name='" + name + '\'' +
+                ", commentDate=" + commentDate +
+                ", date=" + date +
+                ", commentContent='" + commentContent + '\'' +
+                ", content='" + content + '\'' +
+                ", userId='" + userId + '\'' +
+                ", replyId='" + replyId + '\'' +
+                ", votePositive='" + votePositive + '\'' +
+                ", voteNegative='" + voteNegative + '\'' +
+                ", commentCount='" + commentCount + '\'' +
+                ", textContent='" + textContent + '\'' +
+                ", pics=" + pics +
+                ", voted=" + voted +
+                ", negative=" + negative +
+                '}';
+    }
 }

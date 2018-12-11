@@ -10,10 +10,10 @@
         android:id="@+id/comment_name"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:paddingBottom="8dp"
-        android:paddingEnd="16dp"
         android:paddingStart="16dp"
         android:paddingTop="16dp"
+        android:paddingEnd="16dp"
+        android:paddingBottom="8dp"
         android:textColor="@color/item_text_content_color"
         app:layout_constraintStart_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
@@ -23,23 +23,24 @@
         android:id="@+id/vote_negative"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:paddingEnd="16dp"
         android:paddingStart="8dp"
         android:paddingTop="16dp"
-        android:textSize="12sp"
+        android:paddingEnd="16dp"
         android:textColor="@color/item_text_color"
-        app:layout_constraintEnd_toStartOf="parent"
+        android:textSize="12sp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
         tools:text="XX 100" />
 
     <TextView
         android:id="@+id/vote_positive"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:paddingEnd="8dp"
         android:paddingStart="16dp"
         android:paddingTop="16dp"
-        android:textSize="12sp"
+        android:paddingEnd="8dp"
         android:textColor="@color/item_text_color"
+        android:textSize="12sp"
         app:layout_constraintEnd_toStartOf="@+id/vote_negative"
         tools:text="OO 00" />
 
@@ -47,28 +48,59 @@
         android:id="@+id/comment_time"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:paddingBottom="16dp"
-        android:paddingEnd="16dp"
         android:paddingStart="16dp"
-        android:textSize="12sp"
+        android:paddingEnd="16dp"
         android:textColor="@color/item_text_color"
+        android:textSize="12sp"
         app:layout_constraintStart_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/comment_name"
         tools:text="刚刚" />
 
+    <LinearLayout
+        android:id="@+id/at_layout"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="16dp"
+        android:layout_marginTop="12dp"
+        android:layout_marginEnd="16dp"
+        android:background="@drawable/comment_border_shape"
+        android:foreground="?selectableItemBackground"
+        android:orientation="vertical"
+        android:padding="12dp"
+        android:visibility="gone"
+        app:layout_constraintTop_toBottomOf="@id/comment_time">
+
+        <TextView
+            android:id="@+id/at_name"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            tools:text="Good" />
+
+        <TextView
+            android:id="@+id/at_comment"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="4dp"
+            android:textColor="@android:color/black"
+            android:textSize="16sp"
+            tools:text="这是一条评论" />
+
+    </LinearLayout>
+
     <TextView
         android:id="@+id/comment_content"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:paddingEnd="16dp"
+        android:layout_marginTop="12dp"
         android:paddingStart="16dp"
+        android:paddingEnd="16dp"
         android:paddingBottom="16dp"
-        android:textSize="16sp"
         android:textColor="@color/item_text_content_color"
+        android:textSize="16sp"
         app:layout_constraintStart_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/comment_time"
+        app:layout_constraintTop_toBottomOf="@+id/at_layout"
         tools:text="这是一条很煎蛋的评论" />
 
     <View

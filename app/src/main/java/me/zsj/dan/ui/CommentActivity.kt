@@ -29,7 +29,7 @@ import retrofit2.Call
 class CommentActivity : AppCompatActivity(), ICall<NewDetail>, Callback {
 
     companion object {
-        val ID = "id"
+        const val ID = "id"
     }
 
     private val recyclerView: RecyclerView by bindView(R.id.comment_list)
@@ -40,6 +40,7 @@ class CommentActivity : AppCompatActivity(), ICall<NewDetail>, Callback {
     private lateinit var adapter: MultiTypeAdapter
     private lateinit var dataManager: DataManager
     private var items: Items = Items()
+    private var commentBinder = CommentBinder()
 
 
     override fun createCall(arg: Any?): Call<NewDetail> {
@@ -69,7 +70,7 @@ class CommentActivity : AppCompatActivity(), ICall<NewDetail>, Callback {
 
         adapter = MultiTypeAdapter(items)
         adapter.register(String::class.java, CommentCategoryBinder())
-        adapter.register(PostComment::class.java, CommentBinder())
+        adapter.register(PostComment::class.java, commentBinder)
 
         recyclerView.adapter = adapter
 
@@ -82,8 +83,10 @@ class CommentActivity : AppCompatActivity(), ICall<NewDetail>, Callback {
         if (newDetail.post.comments?.size != 0) {
             items.add(getString(R.string.category_comment_rank))
             items.add(PostComment(PostComment.COMMENTS_RANK, newDetail.post))
+            commentBinder.addComments(newDetail.post.commentsRank)
             items.add(getString(R.string.category_comment_normal))
             items.add(PostComment(PostComment.COMMENTS, newDetail.post))
+            commentBinder.addComments(newDetail.post.comments)
             adapter.notifyDataSetChanged()
         }
 

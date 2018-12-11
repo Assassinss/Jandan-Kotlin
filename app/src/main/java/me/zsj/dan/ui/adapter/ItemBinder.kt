@@ -44,8 +44,8 @@ open class ItemBinder(var dataManager: DataManager) {
     }
 
     fun setClickListener(holder: Holder, comment: Comment) {
-        holder.votePositive.setOnClickListener { voteOO(holder, comment.id) }
-        holder.voteNegative.setOnClickListener { voteXX(holder, comment.id) }
+        holder.votePositive.setOnClickListener { voteOO(holder, comment.commentId) }
+        holder.voteNegative.setOnClickListener { voteXX(holder, comment.commentId) }
         holder.more.setOnClickListener { showActionMenu(holder, comment, it) }
     }
 
