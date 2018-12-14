@@ -60,7 +60,7 @@ class JokeAdapter(var context: Activity, var comments: ArrayList<Comment>,
             val view = LayoutInflater.from(context).inflate(R.layout.item_joke, parent, false)
             return JokeHolder(view)
         }
-        throw IllegalStateException()
+        throw IllegalArgumentException()
     }
 
     override fun onBindViewHolder(holder: RecyclerView.ViewHolder, position: Int) {
@@ -93,10 +93,10 @@ class JokeAdapter(var context: Activity, var comments: ArrayList<Comment>,
     }
 
     override fun getItemViewType(position: Int): Int {
-        if (position + 1 == itemCount) {
-            return R.layout.item_load_more
+        return if (position + 1 == itemCount) {
+            R.layout.item_load_more
         } else {
-            return R.layout.item_joke
+            R.layout.item_joke
         }
     }
 

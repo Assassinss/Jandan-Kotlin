@@ -19,11 +19,11 @@
         tools:ignore="GoogleAppIndexingWarning">
 
         <meta-data
-            android:name="me.zsj.dan.glide.OkHttpProgressGlideModule"
-            android:value="GlideModule" />
+            android:name="com.bumptech.glide.integration.okhttp3.OkHttpGlideModule"
+            tools:node="remove" />
 
         <meta-data
-            android:name="com.bumptech.glide.integration.okhttp3.OkHttpGlideModule"
+            android:name="me.zsj.dan.glide.OkHttpProgressGlideModule"
             android:value="GlideModule" />
 
         <activity android:name=".ui.HomeActivity">

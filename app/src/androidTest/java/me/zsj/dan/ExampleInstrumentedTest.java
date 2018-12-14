@@ -8,7 +8,7 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 
 import me.zsj.dan.data.DataManager;
-import me.zsj.dan.data.DownloadExecutors;
+import me.zsj.dan.data.Downloader;
 
 import static org.junit.Assert.assertEquals;
 
@@ -36,8 +36,8 @@ public class ExampleInstrumentedTest {
 
         assertEquals(manager1, manager2);
 
-        DownloadExecutors executors1 = DownloadExecutors.Companion.get();
-        DownloadExecutors executors2 = DownloadExecutors.Companion.get();
+        Downloader executors1 = Downloader.Companion.get();
+        Downloader executors2 = Downloader.Companion.get();
 
         assertEquals(executors1, executors2);
     }

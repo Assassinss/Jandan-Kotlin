@@ -2,6 +2,8 @@ package me.zsj.dan.utils;
 
 import android.text.TextUtils;
 
+import org.jsoup.Jsoup;
+
 /**
  * @author zsj
  */
@@ -15,7 +17,7 @@ public class StringUtils {
     private static final String EMPTY_STR = "";
 
     public static String filter(String filterStr) {
-        return filterStr.replaceAll(FILTER_TAG, EMPTY_STR).replaceAll(N_TAG, EMPTY_STR);
+        return Jsoup.parse(filterStr).text();
     }
 
     public static String filterHtml(String html) {

@@ -3,7 +3,6 @@ package me.zsj.dan.widget;
 import android.content.Context;
 import android.graphics.Bitmap;
 import android.util.AttributeSet;
-import android.view.ViewGroup;
 
 import me.zsj.dan.utils.ScreenUtils;
 import pl.droidsonroids.gif.GifImageView;
@@ -39,12 +38,12 @@ public class GifRatioScaleImageView extends GifImageView {
         this.originalHeight = originalHeight;
     }
 
-    @Override
+   /* @Override
     protected void onMeasure(int widthMeasureSpec, int heightMeasureSpec) {
         if (originalWidth > 0 && originalHeight > 0) {
             float ratio = (float) originalWidth / (float) originalHeight;
 
-            int width = minWidth;
+            int width = 0;
             int height = 0;
 
             if (originalWidth < minWidth) {
@@ -63,26 +62,35 @@ public class GifRatioScaleImageView extends GifImageView {
         } else {
             super.onMeasure(widthMeasureSpec, heightMeasureSpec);
         }
-    }
+    }*/
+
+    /*@Override
+    protected void onMeasure(int widthMeasureSpec, int heightMeasureSpec) {
+        Drawable d = getDrawable();
+        if (d != null) {
+            int width = MeasureSpec.getSize(widthMeasureSpec);
+            int height = (int) Math.ceil((float) width * (float) d.getIntrinsicHeight() / (float) d.getIntrinsicWidth());
+            setMeasuredDimension(width, height);
+        } else {
+            super.onMeasure(widthMeasureSpec, heightMeasureSpec);
+        }
+    }*/
 
     public void setImageView(Bitmap bitmap, int originalWidth, int originalHeight) {
         float ratio = (float) originalWidth / (float) originalHeight;
 
-        int width = minWidth;
+        int width = 0;
         int height = 0;
 
         if (originalWidth < minWidth) {
             width = minWidth;
             height = (int) ((float) width / ratio);
-        } else if (originalWidth >= minWidth) {
+        } else {
             width = minWidth;
             height = (int) ((float) width / ratio);
         }
 
-        ViewGroup.LayoutParams params = getLayoutParams();
-        params.width = width;
-        params.height = height;
-        setLayoutParams(params);
+        setOriginalSize(width, height);
         setImageBitmap(bitmap);
     }
 }

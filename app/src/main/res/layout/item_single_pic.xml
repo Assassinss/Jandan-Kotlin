@@ -5,10 +5,10 @@
     android:id="@+id/card"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:layout_marginBottom="6dp"
-    android:layout_marginEnd="12dp"
     android:layout_marginStart="12dp"
-    android:layout_marginTop="6dp">
+    android:layout_marginTop="6dp"
+    android:layout_marginEnd="12dp"
+    android:layout_marginBottom="6dp">
 
     <LinearLayout
         android:layout_width="match_parent"
@@ -21,14 +21,14 @@
             android:id="@+id/text_content"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginBottom="16dp"
-            android:layout_marginEnd="16dp"
             android:layout_marginStart="16dp"
+            android:layout_marginEnd="16dp"
+            android:layout_marginBottom="16dp"
             android:textColor="@color/item_text_content_color"
             android:textSize="16sp"
             android:visibility="gone"
-            tools:visibility="visible"
-            tools:text="1234566" />
+            tools:text="1234566"
+            tools:visibility="visible" />
 
         <FrameLayout
             android:layout_width="match_parent"
@@ -38,9 +38,16 @@
                 android:id="@+id/picture"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:background="@color/gray_300"
-                android:minHeight="200dp"
+                android:minHeight="120dp"
+                android:scaleType="centerCrop"
                 tools:layout_height="200dp" />
+
+            <com.davemorrissey.labs.subscaleview.SubsamplingScaleImageView
+                android:id="@+id/scale_image_view"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                app:panEnabled="false"
+                app:zoomEnabled="false" />
 
             <TextView
                 android:id="@+id/browse_big_picture"

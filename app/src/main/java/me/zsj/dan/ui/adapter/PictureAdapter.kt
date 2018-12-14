@@ -9,10 +9,12 @@ import android.view.ViewGroup
 import android.widget.ImageView
 import android.widget.ProgressBar
 import android.widget.TextView
+import com.davemorrissey.labs.subscaleview.SubsamplingScaleImageView
 import kotterknife.bindView
 import me.zsj.dan.R
 import me.zsj.dan.binder.Holder
 import me.zsj.dan.data.DataManager
+import me.zsj.dan.data.Downloader
 import me.zsj.dan.model.Comment
 import me.zsj.dan.ui.adapter.common.LoadingHolder
 import me.zsj.dan.ui.adapter.common.OnErrorListener
@@ -96,43 +98,53 @@ class PictureAdapter(var context: Activity, var comments: ArrayList<Comment>,
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RecyclerView.ViewHolder {
         val inflater = LayoutInflater.from(context)
-        if (viewType == R.layout.item_load_more) {
-            val view = inflater.inflate(R.layout.item_load_more, parent, false)
-            return LoadingHolder(view)
-        } else if (viewType == R.layout.item_single_pic) {
-            val view = inflater.inflate(R.layout.item_single_pic, parent, false)
-            return SingleHolder(view)
-        } else if (viewType == R.layout.item_gif_pic) {
-            val view = inflater.inflate(R.layout.item_gif_pic, parent, false)
-            return GifHolder(view)
-        } else if (viewType == R.layout.item_multi_pic) {
-            val view = inflater.inflate(R.layout.item_multi_pic, parent, false)
-            return MultiHolder(view)
+        when (viewType) {
+            R.layout.item_load_more -> {
+                val view = inflater.inflate(R.layout.item_load_more, parent, false)
+                return LoadingHolder(view)
+            }
+            R.layout.item_single_pic -> {
+                val view = inflater.inflate(R.layout.item_single_pic, parent, false)
+                return SingleHolder(view)
+            }
+            R.layout.item_gif_pic -> {
+                val view = inflater.inflate(R.layout.item_gif_pic, parent, false)
+                return GifHolder(view)
+            }
+            R.layout.item_multi_pic -> {
+                val view = inflater.inflate(R.layout.item_multi_pic, parent, false)
+                return MultiHolder(view)
+            }
+            else -> throw IllegalArgumentException()
         }
-        throw IllegalStateException()
     }
 
     override fun onBindViewHolder(holder: RecyclerView.ViewHolder, position: Int) {
-        if (getItemViewType(position) == R.layout.item_load_more) {
-            holder as LoadingHolder
-            holder.showLoading(holder, itemCount, error)
-            holder.loadingContainer.setOnClickListener {
-                holder.progressBar.visibility = View.VISIBLE
-                holder.errorText.visibility = View.GONE
-                onLoadDataListener?.onLoadMoreData()
+        when {
+            getItemViewType(position) == R.layout.item_load_more -> {
+                holder as LoadingHolder
+                holder.showLoading(holder, itemCount, error)
+                holder.loadingContainer.setOnClickListener {
+                    holder.progressBar.visibility = View.VISIBLE
+                    holder.errorText.visibility = View.GONE
+                    onLoadDataListener?.onLoadMoreData()
+                }
             }
-        } else if (getItemViewType(position) == R.layout.item_single_pic) {
-            val comment = comments[position]
-            holder as SingleHolder
-            singleItemBinder?.bindData(context, holder, comment)
-        } else if (getItemViewType(position) == R.layout.item_gif_pic) {
-            val comment = comments[position]
-            holder as GifHolder
-            gifItemBinder?.bindData(context, holder, comment)
-        } else {
-            val comment = comments[position]
-            holder as MultiHolder
-            multiItemBinder?.bindData(context, holder, comment)
+            getItemViewType(position) == R.layout.item_single_pic -> {
+                val comment = comments[position]
+                holder as SingleHolder
+                singleItemBinder?.bindData(context, holder, comment)
+            }
+            getItemViewType(position) == R.layout.item_gif_pic -> {
+                val comment = comments[position]
+                holder as GifHolder
+                gifItemBinder?.bindData(context, holder, comment)
+            }
+            else -> {
+                val comment = comments[position]
+                holder as MultiHolder
+                multiItemBinder?.bindData(context, holder, comment)
+            }
         }
     }
 
@@ -145,18 +157,18 @@ class PictureAdapter(var context: Activity, var comments: ArrayList<Comment>,
     }
 
     override fun getItemViewType(position: Int): Int {
-        if (position + 1 == itemCount) {
-            return R.layout.item_load_more
+        return if (position + 1 == itemCount) {
+            R.layout.item_load_more
         } else {
             val comment = comments[position]
             if (comment.pics?.size == 1) {
                 if (comment.pics[0].endsWith(GIF_TAG)) {
-                    return R.layout.item_gif_pic
+                    R.layout.item_gif_pic
                 } else {
-                    return R.layout.item_single_pic
+                    R.layout.item_single_pic
                 }
             } else {
-                return R.layout.item_multi_pic
+                R.layout.item_multi_pic
             }
         }
     }
@@ -166,6 +178,7 @@ class PictureAdapter(var context: Activity, var comments: ArrayList<Comment>,
         val textContent: TextView by bindView(R.id.text_content)
         val picture: RatioScaleImageView by bindView(R.id.picture)
         val browsePicture: TextView by bindView(R.id.browse_big_picture)
+        val scaleImageView: SubsamplingScaleImageView by bindView(R.id.scale_image_view)
     }
 
     inner class GifHolder(itemView: View) : Holder(itemView), ListItem {
@@ -178,16 +191,16 @@ class PictureAdapter(var context: Activity, var comments: ArrayList<Comment>,
         override fun setActive(newActiveView: View?, newActiveViewPosition: Int) {
         }
 
-        //TODO: 取消图片下载请求
         override fun deactivate(currentView: View?, position: Int) {
+            Downloader.get().stopDownload(comments[position].pics[0])
             val gifImageView = currentView?.findViewById<GifRatioScaleImageView>(R.id.gif_picture)
             val playGif = currentView?.findViewById<ImageView>(R.id.play_gif)
             val loadingProgress = currentView?.findViewById<ProgressBar>(R.id.loading_progress)
+            playGif?.visibility = View.VISIBLE
+            loadingProgress?.visibility = View.GONE
             if (gifImageView != null && playGif != null && loadingProgress != null) {
                 val gifDrawable = gifImageView.drawable
                 if (gifDrawable is GifDrawable) {
-                    playGif.visibility = View.VISIBLE
-                    loadingProgress.visibility = View.GONE
                     gifItemBinder?.stopGifAnimation(gifImageView.drawable as GifDrawable)
                 }
             }

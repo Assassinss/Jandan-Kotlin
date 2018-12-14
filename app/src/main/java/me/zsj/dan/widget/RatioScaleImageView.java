@@ -1,32 +1,20 @@
 package me.zsj.dan.widget;
 
 import android.content.Context;
-import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
-import android.graphics.BitmapRegionDecoder;
-import android.graphics.Rect;
+import android.support.v7.widget.AppCompatImageView;
 import android.util.AttributeSet;
-import android.view.ViewGroup;
 
-import com.shizhefei.view.largeimage.LargeImageView;
-
-import java.io.File;
-import java.io.IOException;
-import java.io.InputStream;
-
-import me.zsj.dan.ui.adapter.PictureAdapter;
 import me.zsj.dan.utils.ScreenUtils;
 
 /**
  * @author zsj
  */
 
-public class RatioScaleImageView extends LargeImageView {
+public class RatioScaleImageView extends AppCompatImageView {
 
     private int maxHeight;
     private int minHeight;
     private int minWidth;
-    private int screenHeight;
 
     private int originalWidth;
     private int originalHeight;
@@ -43,8 +31,7 @@ public class RatioScaleImageView extends LargeImageView {
         super(context, attrs, defStyleAttr);
         minWidth = ScreenUtils.getScreenWidth(context) - ScreenUtils.dpToPx(10);
         maxHeight = ScreenUtils.getScreenHeight(context) - ScreenUtils.dpToPx(56);
-        screenHeight = ScreenUtils.getScreenHeight(context);
-        minHeight = ScreenUtils.dpToPx(150);
+        minHeight = ScreenUtils.dpToPx(120);
     }
 
     public void setOriginalSize(int originalWidth, int originalHeight) {
@@ -78,7 +65,7 @@ public class RatioScaleImageView extends LargeImageView {
         }
     }
 
-    //TODO: 更好的获取图片的宽高方法？
+    /*//TODO: 更好的获取图片的宽高方法？
     public void setBigImage(final PictureAdapter.SingleHolder holder,
                             final File resource, final InputStream inputStream) {
         try {
@@ -124,22 +111,18 @@ public class RatioScaleImageView extends LargeImageView {
     public void setImageView(Bitmap bitmap, int originalWidth, int originalHeight) {
         float ratio = (float) originalWidth / (float) originalHeight;
 
-        int width = minWidth;
+        int width = 0;
         int height = 0;
 
         if (originalWidth < minWidth) {
             width = minWidth;
             height = (int) ((float) width / ratio);
-        } else if (originalWidth >= minWidth) {
+        } else {
             width = minWidth;
             height = (int) ((float) width / ratio);
         }
 
-        ViewGroup.LayoutParams params = getLayoutParams();
-        params.width = width;
-        params.height = height;
-        setLayoutParams(params);
+        setOriginalSize(width, height);
         setImage(bitmap);
-    }
-
+    }*/
 }

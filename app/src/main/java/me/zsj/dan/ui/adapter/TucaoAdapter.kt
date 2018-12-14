@@ -38,11 +38,15 @@ class TucaoAdapter(private var context: Activity, private var comments: ArrayLis
         holder.commentContent.text = doc.text().replace(CommentAdapter.FILTER_REGEX, "")
         if (Helper.hasUserId(tucao.comment_content)) {
             val newTucao = Helper.getTucao(tucao.comment_content, comments)
-            holder.atLayout.visibility = View.VISIBLE
-            holder.atName.text = newTucao?.comment_author
-            val newDoc = Jsoup.parse(newTucao?.comment_content)
-            newDoc.select(CommentAdapter.A_TAG).remove()
-            holder.atComment.text = newDoc.text().replace(CommentAdapter.FILTER_REGEX, "")
+            if (newTucao != null) {
+                holder.atLayout.visibility = View.VISIBLE
+                holder.atName.text = newTucao.comment_author
+                val newDoc = Jsoup.parse(newTucao.comment_content)
+                newDoc.select(CommentAdapter.A_TAG).remove()
+                holder.atComment.text = newDoc.text().replace(CommentAdapter.FILTER_REGEX, "")
+            } else {
+                holder.atLayout.visibility = View.GONE
+            }
         } else {
             holder.atLayout.visibility = View.GONE
         }

@@ -43,7 +43,7 @@ class FreshNewsAdapter(var context: Activity, var freshNewsList: ArrayList<Post>
             val view = LayoutInflater.from(context).inflate(R.layout.item_news, parent, false)
             return NewsHolder(view)
         }
-        throw IllegalStateException()
+        throw IllegalArgumentException()
     }
 
     override fun onLoadingError(error: Boolean) {
@@ -98,10 +98,10 @@ class FreshNewsAdapter(var context: Activity, var freshNewsList: ArrayList<Post>
     }
 
     override fun getItemViewType(position: Int): Int {
-        if (position + 1 == itemCount) {
-            return R.layout.item_load_more
+        return if (position + 1 == itemCount) {
+            R.layout.item_load_more
         } else {
-            return R.layout.item_news
+            R.layout.item_news
         }
     }
 

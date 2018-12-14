@@ -33,7 +33,7 @@
             android:id="@+id/pic_item_list"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            app:layoutManager="GridLayoutManager"
+            app:layoutManager="android.support.v7.widget.GridLayoutManager"
             android:clipToPadding="false"
             app:spanCount="3"/>
 

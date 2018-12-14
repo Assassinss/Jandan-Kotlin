@@ -1,13 +1,11 @@
 package me.zsj.dan.ui.adapter
 
 import android.app.Activity
-import android.graphics.Bitmap
 import android.view.View
 import com.bumptech.glide.Glide
-import com.bumptech.glide.request.animation.GlideAnimation
-import com.bumptech.glide.request.target.SimpleTarget
+import me.zsj.dan.R
 import me.zsj.dan.data.DataManager
-import me.zsj.dan.data.DownloadExecutors
+import me.zsj.dan.data.Downloader
 import me.zsj.dan.model.Comment
 import me.zsj.dan.utils.StringUtils
 import pl.droidsonroids.gif.GifDrawable
@@ -31,18 +29,26 @@ class GifItemBinder(dataManager: DataManager) : ItemBinder(dataManager) {
             holder.textContent.visibility = View.GONE
         }
 
+        //val width = ScreenUtils.getScreenWidth(context) - ScreenUtils.dpToPx(64)
+
         Glide.with(context)
                 .load(item.pics[0])
                 .asBitmap()
-                .into(object : SimpleTarget<Bitmap>() {
+                .placeholder(R.drawable.defalut_placeholder_bg)
+                .error(R.drawable.defalut_placeholder_bg)
+                //.override(width, width)
+                .into(holder.gifImage)
+                /*.into(object : SimpleTarget<Bitmap>() {
                     override fun onResourceReady(resource: Bitmap?, glideAnimation: GlideAnimation<in Bitmap>?) {
                         holder.gifImage.setImageView(resource, resource!!.width, resource.height)
                     }
-                })
+                })*/
 
         holder.playGif.setOnClickListener {
-            DownloadExecutors.get()
-                    .downloadGif(context, item.pics[0], { //start download
+            Downloader.get()
+                    .downloadGif(context, item.pics[0], { percent ->
+                        holder.loadingProgress.progress = percent
+                    }, { //start download
                         holder.playGif.visibility = View.GONE
                         holder.loadingProgress.visibility = View.VISIBLE
                     }, { // download finish
@@ -62,7 +68,7 @@ class GifItemBinder(dataManager: DataManager) : ItemBinder(dataManager) {
         setClickListener(holder, item)
         holder.card.setOnClickListener {
             stopGifAnimation(holder)
-            startTucaoActivity(context, item.id)
+            startTucaoActivity(context, item.commentId)
         }
 
         stopGifAnimation(holder)

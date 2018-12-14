@@ -43,6 +43,8 @@ class ItemPictureAdapter : RecyclerView.Adapter<ItemPictureAdapter.ItemPictureHo
         Glide.with(context)
                 .load(picUrl)
                 .asBitmap()
+                .placeholder(R.drawable.defalut_placeholder_bg)
+                .error(R.drawable.defalut_placeholder_bg)
                 .into(holder.picture)
 
         holder.picture.setOnClickListener {

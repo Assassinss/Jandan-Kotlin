@@ -17,6 +17,7 @@ import me.zsj.dan.model.Comment
 import me.zsj.dan.model.Picture
 import me.zsj.dan.ui.adapter.PictureAdapter
 import me.zsj.dan.ui.adapter.common.OnLoadDataListener
+import me.zsj.dan.utils.NoItemAnimator
 import me.zsj.dan.utils.getColor
 import me.zsj.dan.visibility.calculator.ListItemsVisibilityCalculator
 import me.zsj.dan.visibility.calculator.SingleListViewItemActiveCalculator
@@ -88,6 +89,7 @@ open class PictureFragment : LazyLoadFragment(), ICall<Picture>, Callback, OnLoa
         adapter = PictureAdapter(activity!!, items, dataManager)
         adapter.setOnLoadDataListener(this)
         adapter.setRecyclerView(picsList)
+        picsList.itemAnimator = NoItemAnimator()
         picsList.itemAnimator?.changeDuration = 0
         picsList.layoutManager = this.layoutManager
         picsList.adapter = adapter
@@ -150,7 +152,8 @@ open class PictureFragment : LazyLoadFragment(), ICall<Picture>, Callback, OnLoa
 
         items.addAll(picture.comments)
         dataManager.setComments(items)
-        adapter.notifyItemRangeChanged(items.size - picture.comments.size- 1, items.size)
+        val range = items.size - picture.comments.size
+        adapter.notifyItemRangeChanged(items.size - picture.comments.size, range)
     }
 
     override fun onFailure(t: Throwable?) {
