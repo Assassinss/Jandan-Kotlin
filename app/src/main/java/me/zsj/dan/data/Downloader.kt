@@ -21,7 +21,7 @@ import java.util.concurrent.Executors
  */
 class Downloader private constructor() {
 
-    private val TAG = "DownloadExecutors"
+    private val TAG = "Downloader"
 
     private val networkIO: ExecutorService = Executors.newSingleThreadExecutor()
 
@@ -39,7 +39,6 @@ class Downloader private constructor() {
         }
     }
 
-    //TODO: find a best way download gif
     fun downloadGif(context: Context, url: String,
                     progress: (percent: Int) -> Unit,
                     loadingStart: () -> Unit,

@@ -10,16 +10,20 @@
     android:layout_marginEnd="12dp"
     android:layout_marginBottom="6dp">
 
-    <LinearLayout
+    <android.support.constraint.ConstraintLayout
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:orientation="vertical">
+        android:layout_height="wrap_content">
 
-        <include layout="@layout/item_header" />
+        <include
+            android:id="@+id/item_header"
+            layout="@layout/item_header"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
 
         <TextView
             android:id="@+id/text_content"
-            android:layout_width="wrap_content"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginStart="16dp"
             android:layout_marginEnd="16dp"
@@ -27,12 +31,17 @@
             android:textColor="@color/item_text_content_color"
             android:textSize="16sp"
             android:visibility="gone"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/item_header"
             tools:text="1234566"
             tools:visibility="visible" />
 
         <FrameLayout
+            android:id="@+id/pic_content"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content">
+            android:layout_height="wrap_content"
+            android:layout_marginTop="8dp"
+            app:layout_constraintTop_toBottomOf="@id/text_content">
 
             <me.zsj.dan.widget.RatioScaleImageView
                 android:id="@+id/picture"
@@ -40,33 +49,39 @@
                 android:layout_height="wrap_content"
                 android:minHeight="120dp"
                 android:scaleType="centerCrop"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
                 tools:layout_height="200dp" />
 
             <com.davemorrissey.labs.subscaleview.SubsamplingScaleImageView
                 android:id="@+id/scale_image_view"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                app:layout_constraintTop_toBottomOf="@id/text_content"
                 app:panEnabled="false"
                 app:zoomEnabled="false" />
 
-            <TextView
-                android:id="@+id/browse_big_picture"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_gravity="bottom"
-                android:background="@color/transparent_80"
-                android:gravity="center"
-                android:padding="6dp"
-                android:text="@string/browse_big_picture"
-                android:textColor="@android:color/white"
-                android:textSize="12sp"
-                android:visibility="gone"
-                tools:visibility="visible" />
-
         </FrameLayout>
 
-        <include layout="@layout/item_footer" />
+        <TextView
+            android:id="@+id/browse_big_picture"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_gravity="bottom"
+            android:background="@color/transparent_80"
+            android:gravity="center"
+            android:padding="6dp"
+            android:text="@string/browse_big_picture"
+            android:textColor="@android:color/white"
+            android:textSize="12sp"
+            android:visibility="gone"
+            app:layout_constraintBottom_toBottomOf="@id/pic_content"
+            tools:visibility="visible" />
 
-    </LinearLayout>
+        <include
+            android:id="@+id/item_footer"
+            layout="@layout/item_footer" />
+
+    </android.support.constraint.ConstraintLayout>
 
 </android.support.v7.widget.CardView>

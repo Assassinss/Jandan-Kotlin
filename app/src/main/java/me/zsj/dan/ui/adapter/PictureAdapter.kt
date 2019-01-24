@@ -6,6 +6,7 @@ import android.support.v7.widget.RecyclerView
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.FrameLayout
 import android.widget.ImageView
 import android.widget.ProgressBar
 import android.widget.TextView
@@ -56,22 +57,18 @@ class PictureAdapter(var context: Activity, var comments: ArrayList<Comment>,
     }
 
     override fun onVoteOO(holder: Holder, result: String?) {
-        if (holder is SingleHolder) {
-            singleItemBinder?.updateVotePositive(context, holder, result)
-        } else if (holder is GifHolder) {
-            gifItemBinder?.updateVotePositive(context, holder, result)
-        } else if (holder is MultiHolder) {
-            multiItemBinder?.updateVotePositive(context, holder, result)
+        when (holder) {
+            is SingleHolder -> singleItemBinder?.updateVotePositive(context, holder, result)
+            is GifHolder -> gifItemBinder?.updateVotePositive(context, holder, result)
+            is MultiHolder -> multiItemBinder?.updateVotePositive(context, holder, result)
         }
     }
 
     override fun onVoteXX(holder: Holder, result: String?) {
-        if (holder is SingleHolder) {
-            singleItemBinder?.updateVoteNegative(context, holder, result)
-        } else if (holder is GifHolder) {
-            gifItemBinder?.updateVoteNegative(context, holder, result)
-        } else if (holder is MultiHolder) {
-            multiItemBinder?.updateVoteNegative(context, holder, result)
+        when (holder) {
+            is SingleHolder -> singleItemBinder?.updateVoteNegative(context, holder, result)
+            is GifHolder -> gifItemBinder?.updateVoteNegative(context, holder, result)
+            is MultiHolder -> multiItemBinder?.updateVoteNegative(context, holder, result)
         }
     }
 
@@ -187,6 +184,7 @@ class PictureAdapter(var context: Activity, var comments: ArrayList<Comment>,
         val playGif: ImageView by bindView(R.id.play_gif)
         val loadingProgress: ProgressBar by bindView(R.id.loading_progress)
         val textContent: TextView by bindView(R.id.text_content)
+        val picContent: FrameLayout by bindView(R.id.pic_content)
 
         override fun setActive(newActiveView: View?, newActiveViewPosition: Int) {
         }

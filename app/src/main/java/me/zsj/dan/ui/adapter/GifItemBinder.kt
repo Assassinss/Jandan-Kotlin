@@ -29,40 +29,36 @@ class GifItemBinder(dataManager: DataManager) : ItemBinder(dataManager) {
             holder.textContent.visibility = View.GONE
         }
 
-        //val width = ScreenUtils.getScreenWidth(context) - ScreenUtils.dpToPx(64)
-
         Glide.with(context)
                 .load(item.pics[0])
                 .asBitmap()
                 .placeholder(R.drawable.defalut_placeholder_bg)
                 .error(R.drawable.defalut_placeholder_bg)
-                //.override(width, width)
                 .into(holder.gifImage)
-                /*.into(object : SimpleTarget<Bitmap>() {
-                    override fun onResourceReady(resource: Bitmap?, glideAnimation: GlideAnimation<in Bitmap>?) {
-                        holder.gifImage.setImageView(resource, resource!!.width, resource.height)
-                    }
-                })*/
-
-        holder.playGif.setOnClickListener {
-            Downloader.get()
-                    .downloadGif(context, item.pics[0], { percent ->
-                        holder.loadingProgress.progress = percent
-                    }, { //start download
-                        holder.playGif.visibility = View.GONE
-                        holder.loadingProgress.visibility = View.VISIBLE
-                    }, { // download finish
-                        holder.playGif.visibility = View.GONE
-                        holder.loadingProgress.visibility = View.GONE
-                        holder.gifImage.setImageDrawable(it)
-                    }, { //download failed
-                        holder.playGif.visibility = View.VISIBLE
-                        holder.loadingProgress.visibility = View.GONE
-                    })
-        }
 
         holder.gifImage.setOnClickListener {
-            startImageActivity(context, arrayListOf(item.pics[0]))
+            if (holder.playGif.visibility == View.VISIBLE) {
+                Downloader.get()
+                        .downloadGif(context, item.pics[0], { percent ->
+                            holder.loadingProgress.progress = percent
+                        }, {
+                            //start download
+                            holder.playGif.visibility = View.GONE
+                            holder.loadingProgress.visibility = View.VISIBLE
+                        }, { drawable ->
+                            // download finish
+                            holder.playGif.visibility = View.GONE
+                            holder.loadingProgress.visibility = View.GONE
+                            holder.gifImage.setImageDrawable(drawable)
+                        }, {
+                            //download failed
+                            holder.playGif.visibility = View.VISIBLE
+                            holder.loadingProgress.visibility = View.GONE
+                        })
+            } else {
+                stopGifAnimation(holder)
+                startImageActivity(context, arrayListOf(item.pics[0]))
+            }
         }
 
         setClickListener(holder, item)
@@ -70,8 +66,6 @@ class GifItemBinder(dataManager: DataManager) : ItemBinder(dataManager) {
             stopGifAnimation(holder)
             startTucaoActivity(context, item.commentId)
         }
-
-        stopGifAnimation(holder)
     }
 
     fun stopGifAnimation(holder: PictureAdapter.GifHolder) {
